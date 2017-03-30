@@ -6,7 +6,7 @@ namespace Adminaut\Datatype;
  * Class Text
  * @package Adminaut\Datatype
  */
-class Text extends \Zend\Form\Element\Text
+class Text extends \Zend\Form\Element\Text implements DatatypeInterface
 {
 
 }
