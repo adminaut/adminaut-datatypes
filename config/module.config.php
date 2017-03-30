@@ -1,7 +1,7 @@
 <?php
 
-namespace Adminaut\Datatypes;
+namespace Adminaut\Datatype;
 
 return [
-    
+
 ];

@@ -1,10 +1,10 @@
 <?php
 
-namespace Adminaut\Datatypes;
+namespace Adminaut\Datatype;
 
 /**
  * Class Text
- * @package Adminaut\Datatypes
+ * @package Adminaut\Datatype
  */
 class Text extends \Zend\Form\Element\Text
 {
