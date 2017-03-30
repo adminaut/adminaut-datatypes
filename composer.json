@@ -1,0 +1,33 @@
+{
+  "name": "adminaut/adminaut-datatypes",
+  "description": "Adminaut Datatypes",
+  "license": "MIT",
+  "authors" : [
+    {
+      "name" : "Petr Malecha",
+      "email" : "petr.malecha@gmail.com",
+      "homepage" : "http://www.bedi.cz",
+      "role" : "Developer"
+    },
+    {
+      "name" : "Josef Soušek",
+      "email" : "josef.sousek@mfcc.cz",
+      "role" : "Developer"
+    }
+  ],
+  "homepage": "https://github.com/adminaut/adminaut-datatypes",
+  "keywords": [
+    "adminaut",
+    "adminaut-datatypes",
+    "admin"
+  ],
+  "require": {
+    "php": ">=5.6",
+    "zendframework/zend-form": "^2.10"
+  },
+  "autoload": {
+    "psr-4": {
+      "Adminaut\\Datatypes\\": "src/"
+    }
+  }
+}
