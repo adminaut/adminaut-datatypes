@@ -1,6 +1,7 @@
 <?php
 namespace Adminaut\Datatype;
 
+var_dump("BOO");
 class ConfigProvider
 {
     /**

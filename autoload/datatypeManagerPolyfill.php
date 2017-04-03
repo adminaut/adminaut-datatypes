@@ -8,5 +8,5 @@ call_user_func(function () {
         ? DatatypeManager\DatatypeManagerV2Polyfill::class // TODO[petrm] V3
         : DatatypeManager\DatatypeManagerV2Polyfill::class;
 
-    class_alias($target, FormElementManager::class);
+    class_alias($target, DatatypeManager::class);
 });
