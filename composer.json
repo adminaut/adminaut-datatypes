@@ -32,5 +32,10 @@
     "files": [
       "autoload/formElementManagerPolyfill.php"
     ]
-  }
+  },
+  "extra": {
+    "zf": {
+      "config-provider": "Adminaut\\Datatype\\ConfigProvider"
+    }
+  },
 }
