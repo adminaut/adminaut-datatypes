@@ -30,7 +30,7 @@
       "Adminaut\\Datatype\\": "src/"
     },
     "files": [
-      "src/Module.php"
+      "autoload/formElementManagerPolyfill.php"
     ]
   }
 }
