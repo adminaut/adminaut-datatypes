@@ -28,6 +28,9 @@
   "autoload": {
     "psr-4": {
       "Adminaut\\Datatype\\": "src/"
-    }
+    },
+    "files": [
+      "src/Module.php"
+    ]
   }
 }
