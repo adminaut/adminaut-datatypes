@@ -7,6 +7,8 @@
 
 namespace Adminaut\Datatype\DatatypeManager;
 
+use Adminaut\Datatype\Text;
+use Adminaut\Form\Factory;
 use Interop\Container\ContainerInterface;
 use Zend\Form\Element;
 use Zend\Form\ElementFactory;
@@ -34,6 +36,7 @@ class DatatypeManagerV2Polyfill extends AbstractPluginManager
      * @var array
      */
     protected $aliases = [
+        'text'           => Text::class
         /*
         'button'         => Element\Button::class,
         'captcha'        => Element\Captcha::class,
@@ -76,7 +79,6 @@ class DatatypeManagerV2Polyfill extends AbstractPluginManager
      * @var array
      */
     protected $factories = [
-        /*
         Element\Button::class         => ElementFactory::class,
         Element\Captcha::class        => ElementFactory::class,
         Element\Checkbox::class       => ElementFactory::class,
@@ -144,7 +146,6 @@ class DatatypeManagerV2Polyfill extends AbstractPluginManager
         'zendformelementtime'           => ElementFactory::class,
         'zendformelementurl'            => ElementFactory::class,
         'zendformelementweek'           => ElementFactory::class,
-        */
     ];
 
     /**
@@ -201,8 +202,9 @@ class DatatypeManagerV2Polyfill extends AbstractPluginManager
             return;
         }
 
-        $factory = $instance->getFormFactory();
-        $factory->setFormElementManager($this);
+
+        $factory = new Factory();
+        $factory->setDatatypeManager($this);
 
         if ($container && $container->has('InputFilterManager')) {
             $inputFilters = $container->get('InputFilterManager');
