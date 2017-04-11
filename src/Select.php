@@ -4,22 +4,14 @@ namespace Adminaut\Datatype;
 use Traversable;
 
 /**
- * Class Text
+ * Class Select
  * @package Adminaut\Datatype
  */
-class Text extends \Zend\Form\Element\Text
+class Select extends \Zend\Form\Element\Select
 {
     use Datatype {
         setOptions as datatypeSetOptions;
     }
-
-
-    /**
-     * @var array
-     */
-    protected $attributes = [
-        'type' => 'text',
-    ];
 
     /**
      * @return mixed
@@ -52,5 +44,13 @@ class Text extends \Zend\Form\Element\Text
     {
         $this->attributes['id'] = $this->attributes['name'];
         return $this->attributes;
+    }
+
+    /**
+     * @param array|Traversable $options
+     * @return \Zend\Form\Element
+     */
+    public function setOptions($options) {
+        return $this->datatypeSetOptions($options);
     }
 }

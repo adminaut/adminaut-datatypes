@@ -1,25 +1,17 @@
 <?php
 
 namespace Adminaut\Datatype;
-use Traversable;
 
 /**
- * Class Text
+ * Class Number
  * @package Adminaut\Datatype
  */
-class Text extends \Zend\Form\Element\Text
+class Number extends \Zend\Form\Element\Number
 {
     use Datatype {
         setOptions as datatypeSetOptions;
     }
 
-
-    /**
-     * @var array
-     */
-    protected $attributes = [
-        'type' => 'text',
-    ];
 
     /**
      * @return mixed
