@@ -1,10 +1,13 @@
 <?php
 namespace Adminaut\Datatype;
 
-
 use Zend\Form\Element\Select;
 
-class CountrySelect extends Select
+/**
+ * Class Country
+ * @package Adminaut\Datatype
+ */
+class Country extends Select
 {
     use Datatype {
         setOptions as datatypeSetOptions;

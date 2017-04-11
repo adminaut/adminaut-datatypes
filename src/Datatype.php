@@ -21,7 +21,7 @@ trait Datatype
     /**
      * @return bool
      */
-    public function isListed(): bool
+    public function isListed()
     {
         return $this->listed;
     }
@@ -37,7 +37,7 @@ trait Datatype
     /**
      * @return bool
      */
-    public function isPrimary(): bool
+    public function isPrimary()
     {
         return $this->primary;
     }
