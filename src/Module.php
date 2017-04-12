@@ -1,13 +1,6 @@
 <?php
-/**
- * @link      http://github.com/zendframework/zend-form for the canonical source repository
- * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- */
-
 namespace Adminaut\Datatype;
 
-var_dump("Boo");
 class Module
 {
     /**
@@ -20,6 +13,7 @@ class Module
         $provider = new ConfigProvider();
         return [
             'service_manager' => $provider->getDependencyConfig(),
+            'view_helpers'    => $provider->getViewHelperConfig()
         ];
     }
 

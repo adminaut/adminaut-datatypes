@@ -52,7 +52,7 @@ class File extends Element\File
     /**
      * @return \Adminaut\Entity\File
      */
-    public function getInsertedValue()
+    public function getInsertValue()
     {
         return $this->getFile();
     }

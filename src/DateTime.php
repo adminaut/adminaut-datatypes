@@ -2,7 +2,9 @@
 
 namespace Adminaut\Datatype;
 
+use DateInterval;
 use DateTime as PhpDateTime;
+use Zend\Validator\DateStep as DateStepValidator;
 
 /**
  * Class DateTime
@@ -67,5 +69,20 @@ class DateTime extends \Zend\Form\Element\DateTime
     {
         $value = new \DateTime($this->getValue());
         return $value->format($this->getFormat());
+    }
+
+    /**
+     * @return DateStepValidator
+     */
+    protected function getStepValidator()
+    {
+        $format = $this->getFormat();
+        $stepValue = (isset($this->attributes['step'])) ? $this->attributes['step'] : 1;
+        $baseValue = (isset($this->attributes['min'])) ? $this->attributes['min'] : date($format);
+        return new DateStepValidator([
+            'format'    => $format,
+            'baseValue' => $baseValue,
+            'step'      => new DateInterval("PT{$stepValue}S"),
+        ]);
     }
 }

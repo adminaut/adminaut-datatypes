@@ -7,6 +7,7 @@
 
 namespace Adminaut\Datatype\DatatypeManager;
 
+use Adminaut\Datatype\Checkbox;
 use Adminaut\Datatype\Text;
 use Adminaut\Form\Factory;
 use Interop\Container\ContainerInterface;
@@ -36,41 +37,8 @@ class DatatypeManagerV2Polyfill extends AbstractPluginManager
      * @var array
      */
     protected $aliases = [
-        'text'           => Text::class
-        /*
-        'button'         => Element\Button::class,
-        'captcha'        => Element\Captcha::class,
-        'checkbox'       => Element\Checkbox::class,
-        'collection'     => Element\Collection::class,
-        'color'          => Element\Color::class,
-        'csrf'           => Element\Csrf::class,
-        'date'           => Element\Date::class,
-        'dateselect'     => Element\DateSelect::class,
-        'datetime'       => Element\DateTime::class,
-        'datetimelocal'  => Element\DateTimeLocal::class,
-        'datetimeselect' => Element\DateTimeSelect::class,
-        'element'        => Element::class,
-        'email'          => Element\Email::class,
-        'fieldset'       => Fieldset::class,
-        'file'           => Element\File::class,
-        'form'           => Form::class,
-        'hidden'         => Element\Hidden::class,
-        'image'          => Element\Image::class,
-        'month'          => Element\Month::class,
-        'monthselect'    => Element\MonthSelect::class,
-        'multicheckbox'  => Element\MultiCheckbox::class,
-        'number'         => Element\Number::class,
-        'password'       => Element\Password::class,
-        'radio'          => Element\Radio::class,
-        'range'          => Element\Range::class,
-        'select'         => Element\Select::class,
-        'submit'         => Element\Submit::class,
-        'text'           => Element\Text::class,
-        'textarea'       => Element\Textarea::class,
-        'time'           => Element\Time::class,
-        'url'            => Element\Url::class,
-        'week'           => Element\Week::class,
-        */
+        'text'           => Text::class,
+        'checkbox'       => Checkbox::class
     ];
 
     /**
