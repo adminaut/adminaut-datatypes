@@ -1,18 +1,15 @@
 <?php
 namespace Adminaut\Datatype;
 
-use Zend\Form\Element\Select;
-
 /**
  * Class Country
  * @package Adminaut\Datatype
  */
 class Country extends Select
 {
-    use Datatype {
-        setOptions as datatypeSetOptions;
-    }
-
+    /**
+     * @var array
+     */
     protected $countries = array(
         'AF' => 'Afghanistan',
         'AX' => 'Aland Islands',
@@ -338,7 +335,7 @@ class Country extends Select
 
     /**
      * @param array|\Traversable $options
-     * @return \Zend\Form\Element\Select
+     * @return Select
      */
     public function setOptions($options) {
         if(isset($options['availableCountries'])) {
