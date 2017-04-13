@@ -8,8 +8,10 @@ class Datatype extends TwbBundleFormElement
 {
     public function __construct(ModuleOptions $options)
     {
-        $this->addType('single_checkbox', 'datatypeFormCheckbox');
+        $this->addType('datatypeCheckbox', 'datatypeFormCheckbox');
+        $this->addType('datatypeMultiCheckbox', 'datatypeFormMultiCheckbox');
         $this->addType('datatypeReference', 'datatypeFormReference');
+        $this->addType('datatypeMultiReference', 'datatypeFormMultiReference');
 
         parent::__construct($options);
     }

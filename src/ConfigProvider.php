@@ -45,7 +45,9 @@ class ConfigProvider
         return [
             'invokables' => [
                 'datatypeFormCheckbox'           => \Adminaut\Datatype\Checkbox\FormViewHelper::class,
+                'datatypeFormMultiCheckbox'           => \Adminaut\Datatype\MultiCheckbox\FormViewHelper::class,
                 'datatypeFormReference'          => \Adminaut\Datatype\Reference\FormViewHelper::class,
+                'datatypeFormMultiReference'          => \Adminaut\Datatype\MultiReference\FormViewHelper::class,
             ],
             'aliases' => [
                 'formrow'                    => FormRow::class,

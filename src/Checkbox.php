@@ -7,11 +7,15 @@ namespace Adminaut\Datatype;
  */
 class Checkbox extends \Zend\Form\Element\Checkbox
 {
+    use Datatype {
+        setOptions as datatypeSetOptions;
+    }
+
     /**
      * @var array
      */
     protected $attributes = [
-        'type' => 'single_checkbox'
+        'type' => 'datatypeCheckbox'
     ];
 
     /**
@@ -36,6 +40,7 @@ class Checkbox extends \Zend\Form\Element\Checkbox
     public function setOptions($options)
     {
         parent::setOptions($options);
+        $this->datatypeSetOptions($options);
 
         if (isset($options['listed_unchecked_value'])) {
             $this->setListedUncheckedValue($options['listed_unchecked_value']);
