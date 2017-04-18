@@ -2,6 +2,7 @@
 namespace Adminaut\Datatype;
 
 use Adminaut\Datatype\View\Helper\Factory\DatatypeFactory;
+use Adminaut\Datatype\View\Helper\FormCollection;
 use Adminaut\Datatype\View\Helper\FormRow;
 
 class ConfigProvider
@@ -44,10 +45,12 @@ class ConfigProvider
     {
         return [
             'invokables' => [
+                'formCollection'             => FormCollection::class,
                 'datatypeFormCheckbox'           => \Adminaut\Datatype\Checkbox\FormViewHelper::class,
                 'datatypeFormMultiCheckbox'           => \Adminaut\Datatype\MultiCheckbox\FormViewHelper::class,
                 'datatypeFormReference'          => \Adminaut\Datatype\Reference\FormViewHelper::class,
                 'datatypeFormMultiReference'          => \Adminaut\Datatype\MultiReference\FormViewHelper::class,
+                'datatypeFormGoogleMap'          => \Adminaut\Datatype\GoogleMap\FormViewHelper::class,
             ],
             'aliases' => [
                 'formrow'                    => FormRow::class,
