@@ -35,19 +35,22 @@ class DetailViewHelper extends AbstractHelper
         $identifier = 'datatype-location-' . $datatype->getName();
 
 
-        $sRender = '<div class="row hidden">';
         if($datatype->getConnectedElement()) {
             $data = htmlspecialchars(json_encode(["lat" => $datatype->getValue(), "lng" => $datatype->getConnectedElement()->getValue()]));
 
         } else {
             $data = $datatype->getEditValue();
         }
-        $sRender .= '</div><div class="row">';
-        $sRender .= '<div class="col-xs-12"><div class="datatype-map" style="margin-top: 15px; min-height: 300px;" id="'. $identifier .'" data-useJson="'. $datatype->isUseJSON() .'" data-separator="'.$datatype->getSeparator().'" data-data="'.$data.'" data-readonly="true"></div></div>';
-        $sRender .= '</div>';
 
-        $sRender .= '<script>appendScript("'. $this->getView()->basepath('adminaut/js/datatype/googlemap.js') .'")</script>';
+        if(!empty($datatype->getValue())) {
+            $sRender = '<div class="row">';
+            $sRender .= '<div class="col-xs-12"><div class="datatype-map" style="margin-top: 15px; min-height: 300px;" id="' . $identifier . '" data-useJson="' . $datatype->isUseJSON() . '" data-separator="' . $datatype->getSeparator() . '" data-data="' . $data . '" data-readonly="true"></div></div>';
+            $sRender .= '</div>';
 
-        return $sRender;
+            $sRender .= '<script>appendScript("' . $this->getView()->basepath('adminaut/js/datatype/googlemap.js') . '")</script>';
+            return $sRender;
+        } else {
+            return '';
+        }
     }
 }
