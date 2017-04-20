@@ -25,6 +25,21 @@ class GoogleMap extends Element
     protected $connectedElement;
 
     /**
+     * @var bool
+     */
+    protected $useHiddenElement = false;
+
+    /**
+     * @var bool
+     */
+    protected $useJSON = true;
+
+    /**
+     * @var string
+     */
+    protected $separator = ';';
+
+    /**
      * @var array
      */
     protected $attributes = [
@@ -39,6 +54,18 @@ class GoogleMap extends Element
     {
         if(isset($options['longVar'])) {
             $this->setLongitudeVariable($options['longVar']);
+        } else {
+            if (isset($options['use_json'])) {
+                $this->setUseJSON($options['use_json']);
+            }
+
+            if (isset($options['separator'])) {
+                $this->setSeparator($options['separator']);
+            }
+        }
+
+        if (isset($options['use_hidden_element'])) {
+            $this->setUseHiddenElement($options['use_hidden_element']);
         }
 
         $this->datatypeSetOptions($options);
@@ -78,11 +105,64 @@ class GoogleMap extends Element
     }
 
     /**
+     * @return bool
+     */
+    public function isUseHiddenElement()
+    {
+        return $this->useHiddenElement;
+    }
+
+    /**
+     * @param bool $useHiddenElement
+     */
+    public function setUseHiddenElement($useHiddenElement)
+    {
+        $this->useHiddenElement = $useHiddenElement;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isUseJSON()
+    {
+        return $this->useJSON;
+    }
+
+    /**
+     * @param bool $useJSON
+     */
+    public function setUseJSON($useJSON)
+    {
+        $this->useJSON = $useJSON;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSeparator()
+    {
+        return $this->separator;
+    }
+
+    /**
+     * @param string $separator
+     */
+    public function setSeparator($separator)
+    {
+        $this->separator = $separator;
+    }
+
+    /**
      * @return array
      */
     public function getAttributes()
     {
         $this->attributes['id'] = $this->attributes['name'];
         return $this->attributes;
+    }
+
+    public function getEditValue()
+    {
+        return htmlspecialchars($this->getValue());
     }
 }

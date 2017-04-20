@@ -32,11 +32,25 @@ class FormViewHelper extends AbstractHelper
             ));
         }
 
-        $identifier = 'datatype-map-' . time();
+        $identifier = 'datatype-map-' . $datatype->getName() . '-' . time();
+        $value = method_exists($datatype, 'getEditValue') ? $datatype->getEditValue() : $datatype->getValue();
 
         $sRender = '<div class="row">';
-        $sRender .= '<div class="col-xs-6"><input type="text" name="'.$datatype->getName().'" value="'.$datatype->getValue().'" placeholder="'.$datatype->getAttribute('placeholder').'" class="form-control" id="'. $identifier .'-lat"></div>';
-        $sRender .= '<div class="col-xs-6"><input type="text" name="'.$datatype->getConnectedElement()->getName().'" value="'.$datatype->getConnectedElement()->getValue().'" placeholder="'.$datatype->getConnectedElement()->getAttribute('placeholder').'" class="form-control" id="'. $identifier .'-lng"></div>';
+        if($datatype->getConnectedElement()) {
+
+            $sRender .= '<div class="col-xs-6"><input type="' . ($datatype->isUseHiddenElement() ? 'hidden' : 'text') . '" 
+            name="'.$datatype->getName().'" value="'.$datatype->getValue().'" placeholder="'.$datatype->getAttribute('placeholder').'" 
+            class="form-control" id="'. $identifier .'-lat"></div>';
+            $sRender .= '<div class="col-xs-6"><input type="' . ($datatype->isUseHiddenElement() ? 'hidden' : 'text') . '" 
+            name="' . $datatype->getConnectedElement()->getName() . '" value="' . $datatype->getConnectedElement()->getValue() . '" 
+            placeholder="' . $datatype->getConnectedElement()->getAttribute('placeholder') . '" 
+            class="form-control" id="' . $identifier . '-lng"></div>';
+
+        } else {
+            $sRender .= '<div class="col-xs-12"><input type="' . ($datatype->isUseHiddenElement() ? 'hidden' : 'text') . '" 
+            name="'.$datatype->getName().'" value="'.$datatype->getEditValue().'" placeholder="'.$datatype->getAttribute('placeholder').'" 
+            class="form-control" id="'. $identifier .'-coords" data-useJson="'. $datatype->isUseJSON() .'" data-separator="'.$datatype->getSeparator().'"></div>';
+        }
         $sRender .= '</div><div class="row">';
         $sRender .= '<div class="col-xs-12"><div class="datatype-map" style="margin-top: 15px; min-height: 300px;" id="'. $identifier .'"></div></div>';
         $sRender .= '</div>';

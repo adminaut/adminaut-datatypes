@@ -45,12 +45,19 @@ class ConfigProvider
     {
         return [
             'invokables' => [
+                // form
                 'formCollection'             => FormCollection::class,
                 'datatypeFormCheckbox'           => \Adminaut\Datatype\Checkbox\FormViewHelper::class,
                 'datatypeFormMultiCheckbox'           => \Adminaut\Datatype\MultiCheckbox\FormViewHelper::class,
                 'datatypeFormReference'          => \Adminaut\Datatype\Reference\FormViewHelper::class,
                 'datatypeFormMultiReference'          => \Adminaut\Datatype\MultiReference\FormViewHelper::class,
                 'datatypeFormGoogleMap'          => \Adminaut\Datatype\GoogleMap\FormViewHelper::class,
+                'datatypeFormStreetView'          => \Adminaut\Datatype\StreetView\FormViewHelper::class,
+
+                // detail
+                'datatypeDetail'             => \Adminaut\Datatype\View\Helper\datatypeDetailViewHelper::class,
+                'datatypeGoogleMapDetail'    => \Adminaut\Datatype\GoogleMap\DetailViewHelper::class,
+                'datatypeStreetViewDetail'    => \Adminaut\Datatype\StreetView\DetailViewHelper::class,
             ],
             'aliases' => [
                 'formrow'                    => FormRow::class,

@@ -190,13 +190,17 @@ class MultiReference extends Element implements InputProviderInterface
 
     public function getListedValue()
     {
-        $record = $this->getValue(true);
-
-        if ($record !== null) {
-            return $record->{'get' . $this->getProxy()->getProperty()}();
-        } else {
-            return '';
+        $result = [];
+        $records = $this->getValue(true);
+        foreach($records as $record) {
+            if ($record !== null) {
+                $result[] = $record->{'get' . $this->getProxy()->getProperty()}();
+            } else {
+                $result[] = '';
+            }
         }
+
+        return implode(', ', $result);
     }
 
     /**

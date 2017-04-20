@@ -13,6 +13,7 @@ class Datatype extends TwbBundleFormElement
         $this->addType('datatypeReference', 'datatypeFormReference');
         $this->addType('datatypeMultiReference', 'datatypeFormMultiReference');
         $this->addType('datatypeGoogleMap', 'datatypeFormGoogleMap');
+        $this->addType('datatypeStreetView', 'datatypeFormStreetView');
 
         parent::__construct($options);
     }
