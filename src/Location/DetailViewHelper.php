@@ -35,26 +35,29 @@ class DetailViewHelper extends AbstractHelper
         $identifier = 'datatype-location-' . $datatype->getName();
         $value = method_exists($datatype, 'getEditValue') ? $datatype->getEditValue() : $datatype->getValue();
 
-        $attributes = $datatype->getAttributes();
-        unset($attributes['type']);
-        if($datatype->getLongitudeElement()) {
-            $attributes['data-longitude-element'] = true;
-            $attributes['data-longitude-element-name'] = $datatype->getLongitudeElement()->getName();
+        if(!empty($datatype->getValue())) {
+            $attributes = $datatype->getAttributes();
+            unset($attributes['type']);
+            if ($datatype->getLongitudeElement()) {
+                $attributes['data-longitude-element'] = true;
+                $attributes['data-longitude-element-name'] = $datatype->getLongitudeElement()->getName();
+            }
+
+            if ($datatype->getGooglePlaceIdElement()) {
+                $attributes['data-google-place-id-element'] = true;
+                $attributes['data-google-place-id-element-name'] = $datatype->getGooglePlaceIdElement()->getName();
+            }
+
+            $attributes['data-value'] = $this->getJsonValue($datatype);
+            $attributes['data-readonly'] = true;
+
+            $sRender = '<div class="datatype-location" ' . $this->createAttributesString($attributes) . '></div>';
+
+            $sRender .= '<script>appendScript("' . $this->getView()->basepath('adminaut/js/datatype/location.js') . '")</script>';
+            return $sRender;
+        } else {
+            return '';
         }
-
-        if($datatype->getGooglePlaceIdElement()) {
-            $attributes['data-google-place-id-element'] = true;
-            $attributes['data-google-place-id-element-name'] = $datatype->getGooglePlaceIdElement()->getName();
-        }
-
-        $attributes['data-value'] = $this->getJsonValue($datatype);
-        $attributes['data-readonly'] = true;
-
-        $sRender = '<div class="datatype-location" '.$this->createAttributesString($attributes).'></div>';
-
-        $sRender .= '<script>appendScript("'. $this->getView()->basepath('adminaut/js/datatype/location.js') .'")</script>';
-
-        return $sRender;
     }
 
     /**
