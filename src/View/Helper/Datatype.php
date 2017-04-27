@@ -12,8 +12,10 @@ class Datatype extends TwbBundleFormElement
         $this->addType('datatypeMultiCheckbox', 'datatypeFormMultiCheckbox');
         $this->addType('datatypeReference', 'datatypeFormReference');
         $this->addType('datatypeMultiReference', 'datatypeFormMultiReference');
+        $this->addType('datatypeLocation', 'datatypeFormLocation');
         $this->addType('datatypeGoogleMap', 'datatypeFormGoogleMap');
-        $this->addType('datatypeStreetView', 'datatypeFormStreetView');
+        $this->addType('datatypeGoogleStreetView', 'datatypeFormGoogleStreetView');
+        $this->addType('datatypeGooglePlaceId', 'datatypeFormGooglePlaceId');
 
         parent::__construct($options);
     }

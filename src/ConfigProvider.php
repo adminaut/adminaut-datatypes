@@ -51,13 +51,16 @@ class ConfigProvider
                 'datatypeFormMultiCheckbox'           => \Adminaut\Datatype\MultiCheckbox\FormViewHelper::class,
                 'datatypeFormReference'          => \Adminaut\Datatype\Reference\FormViewHelper::class,
                 'datatypeFormMultiReference'          => \Adminaut\Datatype\MultiReference\FormViewHelper::class,
+                'datatypeFormLocation'          => \Adminaut\Datatype\Location\FormViewHelper::class,
                 'datatypeFormGoogleMap'          => \Adminaut\Datatype\GoogleMap\FormViewHelper::class,
-                'datatypeFormStreetView'          => \Adminaut\Datatype\StreetView\FormViewHelper::class,
+                'datatypeFormGoogleStreetView'          => \Adminaut\Datatype\GoogleStreetView\FormViewHelper::class,
+                'datatypeFormGooglePlaceId'          => \Adminaut\Datatype\GooglePlaceId\FormViewHelper::class,
 
                 // detail
                 'datatypeDetail'             => \Adminaut\Datatype\View\Helper\datatypeDetailViewHelper::class,
+                'datatypeLocationDetail'    => \Adminaut\Datatype\Location\DetailViewHelper::class,
                 'datatypeGoogleMapDetail'    => \Adminaut\Datatype\GoogleMap\DetailViewHelper::class,
-                'datatypeStreetViewDetail'    => \Adminaut\Datatype\StreetView\DetailViewHelper::class,
+                'datatypeGoogleStreetViewDetail'    => \Adminaut\Datatype\GoogleStreetView\DetailViewHelper::class,
             ],
             'aliases' => [
                 'formrow'                    => FormRow::class,

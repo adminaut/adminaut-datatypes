@@ -1,7 +1,7 @@
 <?php
-namespace Adminaut\Datatype\StreetView;
+namespace Adminaut\Datatype\GoogleStreetView;
 
-use Adminaut\Datatype\StreetView;
+use Adminaut\Datatype\GoogleStreetView;
 use Zend\Form\ElementInterface;
 use Zend\Form\View\Helper\AbstractHelper;
 
@@ -13,7 +13,7 @@ class DetailViewHelper extends AbstractHelper
      * Proxies to {@link render()}.
      *
      * @param  ElementInterface|null $element
-     * @return string|StreetView
+     * @return string|GoogleStreetView
      */
     public function __invoke(ElementInterface $element = null)
     {
@@ -25,7 +25,7 @@ class DetailViewHelper extends AbstractHelper
     }
 
     public function render($datatype) {
-        if (! $datatype instanceof StreetView) {
+        if (! $datatype instanceof GoogleStreetView) {
             throw new \Zend\Form\Exception\InvalidArgumentException(sprintf(
                 '%s requires that the element is of type Adminaut\Datatype\StreetView',
                 __METHOD__

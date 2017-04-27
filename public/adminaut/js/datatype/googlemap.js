@@ -12,7 +12,7 @@ function placeMarker($element, location) {
 }
 
 (function ($) {
-    appendScript('https://maps.googleapis.com/maps/api/js?key=' + google_api);
+    appendScript('https://maps.googleapis.com/maps/api/js?libraries=places&key=' + google_api);
 
     $(window).load(function () {
         $('.datatype-map').each(function () {

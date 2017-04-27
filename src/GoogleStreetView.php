@@ -5,10 +5,10 @@ namespace Adminaut\Datatype;
 use Zend\Form\Element;
 
 /**
- * Class StreetView
+ * Class GoogleStreetView
  * @package Adminaut\Datatype
  */
-class StreetView extends Element
+class GoogleStreetView extends Element
 {
     use Datatype {
         setOptions as datatypeSetOptions;
@@ -23,7 +23,7 @@ class StreetView extends Element
      * @var array
      */
     protected $attributes = [
-        'type' => 'datatypeStreetView',
+        'type' => 'datatypeGoogleStreetView',
     ];
 
     /**
