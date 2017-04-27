@@ -21,12 +21,12 @@ class Checkbox extends \Zend\Form\Element\Checkbox
     /**
      * @var string
      */
-    protected $listedUncheckedValue = 'Yes';
+    protected $listedCheckedValue = 'Yes';
 
     /**
      * @var string
      */
-    protected $listedCheckedValue = 'No';
+    protected $listedUncheckedValue = 'No';
 
     /**
      * @var string
