@@ -96,12 +96,22 @@ class Location extends Element
     /**
      * @var array
      */
-    protected $defaultCenter = array(0, 0);
+    protected $defaultCenter = null;
 
     /**
      * @var int
      */
-    protected $defaultZoomLevel = 4;
+    protected $defaultZoomLevel = null;
+
+    /**
+     * @var bool
+     */
+    protected $enableDownloadData = false;
+
+    /**
+     * @var array|null
+     */
+    protected $downloadDataFrom = null;
 
 
     /**
@@ -160,6 +170,14 @@ class Location extends Element
 
         if(isset($options['google_place_id_property'])) {
             $this->setGooglePlaceIdProperty($options['google_place_id_property']);
+        }
+
+        if(isset($options['enable_download_data'])) {
+            $this->setEnableDownloadData($options['enable_download_data']);
+        }
+
+        if(isset($options['download_data_from']) && $this->isEnableDownloadData()) {
+            $this->setDownloadDataFrom($options['download_data_from']);
         }
 
 
@@ -408,6 +426,9 @@ class Location extends Element
         } elseif(!isset($defaultCenter['longitude']) && !isset($defaultCenter['lng'])) {
             throw new InvalidDefaultCenterException('Missing longitude property.');
         } else {
+            $defaultCenter['latitude'] = $defaultCenter['lat'];
+            $defaultCenter['longitude'] = $defaultCenter['lng'];
+            unset($defaultCenter['lat'], $defaultCenter['lng']);
             $this->defaultCenter = $defaultCenter;
         }
     }
@@ -426,5 +447,37 @@ class Location extends Element
     public function setDefaultZoomLevel($defaultZoomLevel)
     {
         $this->defaultZoomLevel = $defaultZoomLevel;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnableDownloadData()
+    {
+        return $this->enableDownloadData;
+    }
+
+    /**
+     * @param bool $enableDownloadData
+     */
+    public function setEnableDownloadData($enableDownloadData)
+    {
+        $this->enableDownloadData = $enableDownloadData;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getDownloadDataFrom()
+    {
+        return $this->downloadDataFrom;
+    }
+
+    /**
+     * @param array|null $downloadDataFrom
+     */
+    public function setDownloadDataFrom($downloadDataFrom)
+    {
+        $this->downloadDataFrom = $downloadDataFrom;
     }
 }

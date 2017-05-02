@@ -92,7 +92,6 @@ class FormViewHelper extends TwbBundleFormMultiCheckbox
             $value           = '';
             $label           = '';
             $inputAttributes = $attributes;
-            $inputAttributes['id'] .= '-' . $optionSpec['value'];
             $labelAttributes = ['class' => 'checkbox-label', 'for' => $inputAttributes['id']];
             $selected        = (isset($inputAttributes['selected'])
                 && $inputAttributes['type'] != 'radio'
@@ -131,6 +130,7 @@ class FormViewHelper extends TwbBundleFormMultiCheckbox
                 $selected = true;
             }
 
+            $inputAttributes['id'] .= '-' . $value;
             $inputAttributes['value']    = $value;
             $inputAttributes['checked']  = $selected;
             $inputAttributes['disabled'] = $disabled;

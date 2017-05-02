@@ -47,6 +47,24 @@ class FormViewHelper extends AbstractHelper
             $attributes['data-google-place-id-element-name'] = $datatype->getGooglePlaceIdElement()->getName();
         }
 
+        if($datatype->getDefaultCenter()) {
+            $attributes['data-default-center'] = json_encode($datatype->getDefaultCenter());
+        }
+
+        if($datatype->getDefaultZoomLevel()) {
+            $attributes['data-default-zoom-level'] = $datatype->getDefaultZoomLevel();
+        }
+
+        if($datatype->isEnableDownloadData()) {
+            $attributes['data-enable-download-data'] = true;
+
+            if($datatype->getDownloadDataFrom()) {
+                $attributes['data-download-data-from'] = json_encode($datatype->getDownloadDataFrom());
+            } else {
+                throw new \Exception('Elements for download data missing while downloading enabled.');
+            }
+        }
+
         $attributes['data-value'] = $this->getJsonValue($datatype);
 
         $sRender = '<div class="datatype-location" '.$this->createAttributesString($attributes).'>';
@@ -55,7 +73,12 @@ class FormViewHelper extends AbstractHelper
             $sRender .= '&#9;<input type="' . ($datatype->isUseHiddenElement() ? 'hidden' : 'text') . '" name="' . $datatype->getLongitudeElement()->getName() . '" value="' . $datatype->getLongitudeElement()->getValue() . '"' . ($datatype->getLongitudeElement()->getAttribute('placeholder') ? 'placeholder="' . $datatype->getLongitudeElement()->getAttribute('placeholder') . '"' : '') . ' />';
         }
 
-        $sRender .= '<input class="controls search-input" type="text" placeholder="'. $this->view->translate('Enter a location') .'">';
+        $sRender .= '    <div class="datatype-location-search-container">';
+        $sRender .= '        <input class="controls search-input" type="text" placeholder="'. $this->view->translate('Enter a location') .'">';
+        if($datatype->isEnableDownloadData()) {
+            $sRender .= '        <button class="gm-button download-data-button" type="button"><i class="fa fa-level-down"></i></button>';
+        }
+        $sRender .= '    </div>';
         $sRender .= '</div>';
 
         /*$sRender = '<div class="row datatype-streetview" id="'. $identifier .'">';
@@ -108,22 +131,24 @@ class FormViewHelper extends AbstractHelper
         }
 
         if($datatype->getEngine() === $datatype::ENGINE_GOOGLE) {
-            if ($datatype->getGooglePlaceIdElement()) {
+            if ($datatype->getGooglePlaceIdElement() && !empty($datatype->getGooglePlaceIdElement()->getValue())) {
                 $value->googlePlaceId = $datatype->getGooglePlaceIdElement()->getValue();
             } else {
-                try {
-                    $data = json_decode($datatype->getValue());
+                if(!empty($datatype->getValue())) {
+                    try {
+                        $data = json_decode($datatype->getValue());
 
-                    if(isset($data->googlePlaceId)) {
-                        $value->googlePlaceId = $data->googlePlaceId;
-                    }
-                } catch (\Exception $e) {
-                    $data = explode($datatype->getSeparator(), $datatype->getValue());
+                        if (isset($data->googlePlaceId)) {
+                            $value->googlePlaceId = $data->googlePlaceId;
+                        }
+                    } catch (\Exception $e) {
+                        $data = explode($datatype->getSeparator(), $datatype->getValue());
 
-                    if(sizeof($data) >= 2) {
-                        $value->googlePlaceId = $data[2];
-                    } elseif(sizeof($data) == 1) {
-                        $value->googlePlaceId = $data[0];
+                        if (sizeof($data) >= 2) {
+                            $value->googlePlaceId = $data[2];
+                        } elseif (sizeof($data) == 1) {
+                            $value->googlePlaceId = $data[0];
+                        }
                     }
                 }
             }

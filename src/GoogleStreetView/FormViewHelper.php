@@ -34,13 +34,22 @@ class FormViewHelper extends AbstractHelper
 
         $identifier = 'datatype-streetview-' . $datatype->getName();
         $value = method_exists($datatype, 'getEditValue') ? $datatype->getEditValue() : $datatype->getValue();
+        $mapData = '';
+
+        if($datatype->getDefaultCenter()) {
+            $mapData .= ' data-default-center="' . htmlspecialchars(json_encode($datatype->getDefaultCenter())) . '"';
+        }
+
+        if($datatype->getDefaultZoomLevel()) {
+            $mapData .= ' data-default-zoom-level="' . $datatype->getDefaultZoomLevel() . '"';
+        }
 
         $sRender = '<div class="row datatype-streetview" id="'. $identifier .'">';
         $sRender .= '<div class="col-xs-12"><input type="' . ($datatype->isUseHiddenElement() ? 'hidden' : 'text') . '" 
         name="'.$datatype->getName().'" value="'.$datatype->getEditValue().'" placeholder="'.$datatype->getAttribute('placeholder').'" 
         class="form-control" id="'. $identifier .'-input"></div>';
         $sRender .= '</div><div class="row">';
-        $sRender .= '<div class="col-xs-12 col-sm-4 no-gutter-right"><div class="datatype-streetview-map" style="margin-top: 15px; min-height: 300px;" id="'. $identifier .'-map"></div></div>';
+        $sRender .= '<div class="col-xs-12 col-sm-4 no-gutter-right"><div class="datatype-streetview-map" style="margin-top: 15px; min-height: 300px;" id="'. $identifier .'-map" '.$mapData.'></div></div>';
         $sRender .= '<div class="col-xs-12 col-sm-8 no-gutter-left"><div class="datatype-streetview-panorama" style="margin-top: 15px; min-height: 300px;" id="'. $identifier .'-panorama"></div></div>';
         $sRender .= '</div>';
 

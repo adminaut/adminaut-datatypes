@@ -24,4 +24,12 @@ class MultiCheckbox extends \Zend\Form\Element\MultiCheckbox
         $this->attributes['id'] = $this->attributes['name'];
         return $this->attributes;
     }
+
+    /**
+     * @return string
+     */
+    public function getListedValue()
+    {
+        return implode(',', $this->getValue());
+    }
 }

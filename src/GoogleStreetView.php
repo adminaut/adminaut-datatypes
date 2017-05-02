@@ -2,6 +2,7 @@
 
 namespace Adminaut\Datatype;
 
+use Adminaut\Datatype\Location\Exception\InvalidDefaultCenterException;
 use Zend\Form\Element;
 
 /**
@@ -22,6 +23,16 @@ class GoogleStreetView extends Element
     /**
      * @var array
      */
+    protected $defaultCenter = null;
+
+    /**
+     * @var int
+     */
+    protected $defaultZoomLevel = null;
+
+    /**
+     * @var array
+     */
     protected $attributes = [
         'type' => 'datatypeGoogleStreetView',
     ];
@@ -34,6 +45,18 @@ class GoogleStreetView extends Element
     {
         if (isset($options['use_hidden_element'])) {
             $this->setUseHiddenElement($options['use_hidden_element']);
+        }
+
+        if(isset($options['default_center'])) {
+            $this->setDefaultCenter($options['default_center']);
+        }
+
+        if(isset($options['default_zoom'])) {
+            $this->setDefaultZoomLevel($options['default_zoom']);
+        }
+
+        if(isset($options['default_zoom_level'])) {
+            $this->setDefaultZoomLevel($options['default_zoom_level']);
         }
 
         $this->datatypeSetOptions($options);
@@ -76,5 +99,46 @@ class GoogleStreetView extends Element
     public function getEditValue()
     {
         return htmlspecialchars($this->getValue());
+    }
+
+    /**
+     * @return array
+     */
+    public function getDefaultCenter()
+    {
+        return $this->defaultCenter;
+    }
+
+    /**
+     * @param array $defaultCenter
+     */
+    public function setDefaultCenter($defaultCenter)
+    {
+        if(!isset($defaultCenter['latitude']) && !isset($defaultCenter['lat'])) {
+            throw new InvalidDefaultCenterException('Missing latitude property.');
+        } elseif(!isset($defaultCenter['longitude']) && !isset($defaultCenter['lng'])) {
+            throw new InvalidDefaultCenterException('Missing longitude property.');
+        } else {
+            $defaultCenter['latitude'] = $defaultCenter['lat'];
+            $defaultCenter['longitude'] = $defaultCenter['lng'];
+            unset($defaultCenter['lat'], $defaultCenter['lng']);
+            $this->defaultCenter = $defaultCenter;
+        }
+    }
+
+    /**
+     * @return int
+     */
+    public function getDefaultZoomLevel()
+    {
+        return $this->defaultZoomLevel;
+    }
+
+    /**
+     * @param int $defaultZoomLevel
+     */
+    public function setDefaultZoomLevel($defaultZoomLevel)
+    {
+        $this->defaultZoomLevel = $defaultZoomLevel;
     }
 }
