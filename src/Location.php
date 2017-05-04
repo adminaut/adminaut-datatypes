@@ -22,11 +22,6 @@ class Location extends Element
     const GOOGLE_MODE_PLACES = "places";
     const GOOGLE_MODE_FULL = "full";
 
-    /** Save as constants */
-    const SAVE_AS_ELEMENTS = 'elements';
-    const SAVE_AS_JSON = 'json';
-    const SAVE_AS_STRING = 'string';
-
     /** Datatype defaults */
     use Datatype {
         setOptions as datatypeSetOptions;
@@ -79,16 +74,6 @@ class Location extends Element
     protected $longitudeElement = null;
 
     /**
-     * @var string|null
-     */
-    protected $saveAs = self::SAVE_AS_JSON;
-
-    /**
-     * @var string
-     */
-    protected $separator = ';';
-
-    /**
      * @var bool
      */
     protected $readOnly = false;
@@ -129,14 +114,6 @@ class Location extends Element
     {
         if (isset($options['use_hidden_element'])) {
             $this->setUseHiddenElement($options['use_hidden_element']);
-        }
-
-        if(isset($options['save_as'])) {
-            $this->setSaveAs($options['save_as']);
-        }
-
-        if(isset($options['separator'])) {
-            $this->setSeparator($options['separator']);
         }
 
         if(isset($options['engine'])) {
@@ -195,8 +172,6 @@ class Location extends Element
         $this->attributes['id'] = 'datatype-location-' . $this->getName();
         $this->attributes['class'] = 'datatype-location';
         $this->attributes['data-use-hidden-element'] = $this->isUseHiddenElement();
-        $this->attributes['data-save-as'] = $this->getSaveAs();
-        $this->attributes['data-separator'] = $this->getSeparator();
         $this->attributes['data-main-input'] = $this->getName();
         $this->attributes['data-engine'] = $this->getEngine();
         $this->attributes['data-readonly'] = $this->isReadOnly();
@@ -345,50 +320,8 @@ class Location extends Element
         $this->longitudeElement = $longitudeElement;
     }
 
-    /**
-     * @return null|string
-     */
-    public function getSaveAs()
-    {
-        return $this->saveAs;
-    }
-
-    /**
-     * @param null|string $saveAs
-     */
-    public function setSaveAs($saveAs)
-    {
-        $availableSaveTypes = [self::SAVE_AS_ELEMENTS, self::SAVE_AS_JSON, self::SAVE_AS_STRING];
-
-        if(!in_array($saveAs, $availableSaveTypes)) {
-            throw new InvalidSaveTypeException('Invalid save type. Available types: ' . implode(',', $availableSaveTypes));
-        } else {
-            $this->saveAs = $saveAs;
-        }
-    }
-
-    /**
-     * @return string
-     */
-    public function getSeparator()
-    {
-        return $this->separator;
-    }
-
-    /**
-     * @param string $separator
-     */
-    public function setSeparator($separator)
-    {
-        $this->separator = $separator;
-    }
-
     public function getEditValue()
     {
-        if($this->getSaveAs() != self::SAVE_AS_ELEMENTS) {
-            return htmlspecialchars($this->getValue());
-        }
-
         return $this->getValue();
     }
 

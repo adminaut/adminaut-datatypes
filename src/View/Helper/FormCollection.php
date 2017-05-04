@@ -3,6 +3,7 @@ namespace Adminaut\Datatype\View\Helper;
 
 
 use Adminaut\Datatype\GoogleMap;
+use Adminaut\Datatype\GoogleStreetView;
 use Adminaut\Datatype\Location;
 use TwbBundle\Form\View\Helper\TwbBundleFormCollection;
 use Zend\Form\ElementInterface;
@@ -33,6 +34,14 @@ class FormCollection extends TwbBundleFormCollection
                         if(isset($oElement->getElements()[$oElementOrFieldset->getLongitudeVariable()])) {
                             $oElementOrFieldset->setConnectedElement($oElement->getElements()[$oElementOrFieldset->getLongitudeVariable()]);
                             $oElement->remove($oElementOrFieldset->getLongitudeVariable());
+                        }
+                    }
+                }
+
+                if($oElementOrFieldset instanceof GoogleStreetView) {
+                    if($oElementOrFieldset->getLocationProperty()) {
+                        if(isset($oElement->getElements()[$oElementOrFieldset->getLocationProperty()])) {
+                            $oElementOrFieldset->setLocationElement($oElement->getElements()[$oElementOrFieldset->getLocationProperty()]);
                         }
                     }
                 }

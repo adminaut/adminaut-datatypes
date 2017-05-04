@@ -67,53 +67,16 @@ class DetailViewHelper extends AbstractHelper
     private function getJsonValue($datatype) {
         $value = new \stdClass();
 
-        if($datatype->getLongitudeElement()) {
-            if(!empty($datatype->getValue())) {
-                $value->latitude = $datatype->getValue();
-            }
-            if(!empty($datatype->getLongitudeElement()->getValue())) {
-                $value->longitude = $datatype->getLongitudeElement()->getValue();
-            }
-        } elseif(!empty($datatype->getValue())) {
-            try {
-                $data = json_decode($datatype->getValue());
-
-                if(isset($data->latitude)) {
-                    $value->latitude = $data->latitude;
-                }
-
-                if(isset($data->longitude)) {
-                    $value->longitude = $data->longitude;
-                }
-            } catch (\Exception $e) {
-                $data = explode($datatype->getSeparator(), $datatype->getValue());
-
-                if(sizeof($data) >= 2) {
-                    $value->latitude = $data[0];
-                    $value->longitude = $data[1];
-                }
-            }
+        if(!empty($datatype->getValue())) {
+            $value->latitude = $datatype->getValue();
+        }
+        if(!empty($datatype->getLongitudeElement()->getValue())) {
+            $value->longitude = $datatype->getLongitudeElement()->getValue();
         }
 
         if($datatype->getEngine() === $datatype::ENGINE_GOOGLE) {
             if ($datatype->getGooglePlaceIdElement()) {
                 $value->googlePlaceId = $datatype->getGooglePlaceIdElement()->getValue();
-            } else {
-                try {
-                    $data = json_decode($datatype->getValue());
-
-                    if(isset($data->googlePlaceId)) {
-                        $value->googlePlaceId = $data->googlePlaceId;
-                    }
-                } catch (\Exception $e) {
-                    $data = explode($datatype->getSeparator(), $datatype->getValue());
-
-                    if(sizeof($data) >= 2) {
-                        $value->googlePlaceId = $data[2];
-                    } elseif(sizeof($data) == 1) {
-                        $value->googlePlaceId = $data[0];
-                    }
-                }
             }
         }
 

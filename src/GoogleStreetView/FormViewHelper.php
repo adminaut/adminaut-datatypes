@@ -44,13 +44,32 @@ class FormViewHelper extends AbstractHelper
             $mapData .= ' data-default-zoom-level="' . $datatype->getDefaultZoomLevel() . '"';
         }
 
-        $sRender = '<div class="row datatype-streetview" id="'. $identifier .'">';
-        $sRender .= '<div class="col-xs-12"><input type="' . ($datatype->isUseHiddenElement() ? 'hidden' : 'text') . '" 
+        $_attributes = [];
+        if($datatype->getDownloadLocation() !== 'disabled') {
+            $_attributes['data-download-location'] = $datatype->getDownloadLocation();
+
+            if($datatype->getLocationElement()) {
+                $_attributes['data-location-latitude-input'] = $datatype->getLocationElement()->getName();
+                $_attributes['data-location-longitude-input'] = $datatype->getLocationElement()->getLongitudeElement()->getName();
+            } else {
+                throw new \Exception('Location datatype for download data missing while downloading enabled.');
+            }
+        } else {
+            $_attributes['data-download-location'] = 'disabled';
+        }
+
+        $sRender = '<div class="datatype-streetview" id="'. $identifier .'" '. $this->createAttributesString($_attributes) .'>';
+        $sRender .= '    <div class="row">';
+        $sRender .= '        <div class="col-xs-12"><input type="' . ($datatype->isUseHiddenElement() ? 'hidden' : 'text') . '" 
         name="'.$datatype->getName().'" value="'.$datatype->getEditValue().'" placeholder="'.$datatype->getAttribute('placeholder').'" 
         class="form-control" id="'. $identifier .'-input"></div>';
-        $sRender .= '</div><div class="row">';
-        $sRender .= '<div class="col-xs-12 col-sm-4 no-gutter-right"><div class="datatype-streetview-map" style="margin-top: 15px; min-height: 300px;" id="'. $identifier .'-map" '.$mapData.'></div></div>';
-        $sRender .= '<div class="col-xs-12 col-sm-8 no-gutter-left"><div class="datatype-streetview-panorama" style="margin-top: 15px; min-height: 300px;" id="'. $identifier .'-panorama"></div></div>';
+        if($datatype->getDownloadLocation() !== 'disabled') {
+            $sRender .= '        <button class="gm-button download-location-button" type="button"><i class="fa fa-level-down"></i></button>';
+        }
+        $sRender .= '    </div><div class="row">';
+        $sRender .= '        <div class="col-xs-12 col-sm-4 no-gutter-right"><div class="datatype-streetview-map" style="margin-top: 15px; min-height: 300px;" id="'. $identifier .'-map" '.$mapData.'></div></div>';
+        $sRender .= '        <div class="col-xs-12 col-sm-8 no-gutter-left"><div class="datatype-streetview-panorama" style="margin-top: 15px; min-height: 300px;" id="'. $identifier .'-panorama"></div></div>';
+        $sRender .= '    </div>';
         $sRender .= '</div>';
 
         $sRender .= '<script>appendScript("'. $this->getView()->basepath('adminaut/js/datatype/googlestreetview.js') .'")</script>';

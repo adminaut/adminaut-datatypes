@@ -32,4 +32,12 @@ class MultiCheckbox extends \Zend\Form\Element\MultiCheckbox
     {
         return implode(',', $this->getValue());
     }
+
+    public function setValue($value)
+    {
+        $this->value = $value === "" ? [] : $value;
+        return $this;
+    }
+
+
 }

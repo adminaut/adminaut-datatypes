@@ -31,6 +31,21 @@ class GoogleStreetView extends Element
     protected $defaultZoomLevel = null;
 
     /**
+     * @var string
+     */
+    protected $downloadLocation = 'disabled';
+
+    /**
+     * @var string|null
+     */
+    protected $locationProperty = null;
+
+    /**
+     * @var Location|null
+     */
+    protected $locationElement = null;
+
+    /**
      * @var array
      */
     protected $attributes = [
@@ -57,6 +72,14 @@ class GoogleStreetView extends Element
 
         if(isset($options['default_zoom_level'])) {
             $this->setDefaultZoomLevel($options['default_zoom_level']);
+        }
+
+        if(isset($options['download_location'])) {
+            $this->setEnableDownloadLocation($options['download_location']);
+        }
+
+        if(isset($options['location_property'])) {
+            $this->setLocationProperty($options['location_property']);
         }
 
         $this->datatypeSetOptions($options);
@@ -140,5 +163,53 @@ class GoogleStreetView extends Element
     public function setDefaultZoomLevel($defaultZoomLevel)
     {
         $this->defaultZoomLevel = $defaultZoomLevel;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDownloadLocation()
+    {
+        return $this->downloadLocation;
+    }
+
+    /**
+     * @param string $downloadLocation
+     */
+    public function setEnableDownloadLocation($downloadLocation)
+    {
+        $this->downloadLocation = $downloadLocation;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getLocationProperty()
+    {
+        return $this->locationProperty;
+    }
+
+    /**
+     * @param null|string $locationProperty
+     */
+    public function setLocationProperty($locationProperty)
+    {
+        $this->locationProperty = $locationProperty;
+    }
+
+    /**
+     * @return Location|null
+     */
+    public function getLocationElement()
+    {
+        return $this->locationElement;
+    }
+
+    /**
+     * @param Location|null $locationElement
+     */
+    public function setLocationElement($locationElement)
+    {
+        $this->locationElement = $locationElement;
     }
 }
