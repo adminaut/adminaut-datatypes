@@ -3,7 +3,7 @@
 namespace Adminaut\Datatype;
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use DoctrineModule\Form\Element\Proxy;
+use Adminaut\Datatype\Reference\Proxy;
 use RuntimeException;
 use Zend\Code\Annotation\AnnotationManager;
 use Zend\Code\Reflection\ClassReflection;
@@ -71,11 +71,6 @@ class Reference extends Element implements InputProviderInterface
     protected $visualization = "select";
 
     /**
-     * @var string|null
-     */
-    protected $mask = null;
-
-    /**
      * @return Proxy
      */
     public function getProxy()
@@ -124,10 +119,6 @@ class Reference extends Element implements InputProviderInterface
 
         if (!isset($options['property'])) {
             $this->getProxy()->setProperty($this->getPrimaryProperty());
-        }
-
-        if (isset($options['mask'])) {
-            $this->setMask($options['mask']);
         }
 
         $this->datatypeSetOptions($options);
@@ -200,12 +191,7 @@ class Reference extends Element implements InputProviderInterface
             return $this->valueOptions;
         }
 
-        if ($this->getMask()) {
-            $this->loadValueOptionsWithMask();
-            $proxyValueOptions = $this->valueOptions;
-        } else {
-            $proxyValueOptions = $this->getProxy()->getValueOptions();
-        }
+        $proxyValueOptions = $this->getProxy()->getValueOptions();
 
         if (!empty($proxyValueOptions)) {
             $this->setValueOptions($proxyValueOptions);
@@ -395,22 +381,6 @@ class Reference extends Element implements InputProviderInterface
     }
 
     /**
-     * @return null|string
-     */
-    public function getMask()
-    {
-        return $this->mask;
-    }
-
-    /**
-     * @param null|string $mask
-     */
-    public function setMask($mask)
-    {
-        $this->mask = $mask;
-    }
-
-    /**
      * @return string
      */
     public function getVisualization()
@@ -484,139 +454,5 @@ class Reference extends Element implements InputProviderInterface
     public function getObjectVars()
     {
         return get_object_vars($this);
-    }
-
-
-    /**
-     * Load value options
-     *
-     * @throws RuntimeException
-     * @return void
-     */
-    protected function loadValueOptionsWithMask()
-    {
-        if (!($om = $this->getProxy()->getObjectManager())) {
-            throw new RuntimeException('No object manager was set');
-        }
-
-        if (!($targetClass = $this->getProxy()->getTargetClass())) {
-            throw new RuntimeException('No target class was set');
-        }
-
-        $metadata = $om->getClassMetadata($targetClass);
-        $identifier = $metadata->getIdentifierFieldNames();
-        $objects = $this->getProxy()->getObjects();
-        $options = [];
-        $optionAttributes = [];
-        $mask = $this->getMask();
-
-        if ($this->getProxy()->getDisplayEmptyItem()) {
-            $options[''] = $this->getProxy()->getEmptyItemLabel();
-        }
-
-        foreach ($objects as $key => $object) {
-            preg_match_all("^%(.*?)%^", $mask, $matches);
-
-            $label = $mask;
-            foreach ($matches[1] as $property) {
-                if ($this->getProxy()->getIsMethod() == false && !$metadata->hasField($property)) {
-                    throw new RuntimeException(
-                        sprintf(
-                            'Property "%s" could not be found in object "%s"',
-                            $property,
-                            $targetClass
-                        )
-                    );
-                }
-
-                $getter = 'get' . ucfirst($property);
-
-                if (!is_callable([$object, $getter])) {
-                    throw new RuntimeException(
-                        sprintf('Method "%s::%s" is not callable', $this->getProxy()->getTargetClass(), $getter)
-                    );
-                }
-
-                $label = str_replace("%$property%", $object->{$getter}(), $label);
-            }
-
-            if (count($identifier) > 1) {
-                $value = $key;
-            } else {
-                $value = current($metadata->getIdentifierValues($object));
-            }
-
-            foreach ($this->getProxy()->getOptionAttributes() as $optionKey => $optionValue) {
-                if (is_string($optionValue)) {
-                    $optionAttributes[$optionKey] = $optionValue;
-
-                    continue;
-                }
-
-                if (is_callable($optionValue)) {
-                    $callableValue = call_user_func($optionValue, $object);
-                    $optionAttributes[$optionKey] = (string)$callableValue;
-
-                    continue;
-                }
-
-                throw new RuntimeException(
-                    sprintf(
-                        'Parameter "option_attributes" expects an array of key => value where value is of type'
-                        . '"string" or "callable". Value of type "%s" found.',
-                        gettype($optionValue)
-                    )
-                );
-            }
-
-            // If no optgroup_identifier has been configured, apply default handling and continue
-            if (is_null($this->getProxy()->getOptgroupIdentifier())) {
-                $options[] = ['label' => $label, 'value' => $value, 'attributes' => $optionAttributes];
-
-                continue;
-            }
-
-            // optgroup_identifier found, handle grouping
-            $optgroupGetter = 'get' . ucfirst($this->getProxy()->getOptgroupIdentifier());
-
-            if (!is_callable([$object, $optgroupGetter])) {
-                throw new RuntimeException(
-                    sprintf('Method "%s::%s" is not callable', $this->getProxy()->getTargetClass(), $optgroupGetter)
-                );
-            }
-
-            $optgroup = $object->{$optgroupGetter}();
-
-            // optgroup_identifier contains a valid group-name. Handle default grouping.
-            if (false === is_null($optgroup) && trim($optgroup) !== '') {
-                $options[$optgroup]['label'] = $optgroup;
-                $options[$optgroup]['options'][] = [
-                    'label' => $label,
-                    'value' => $value,
-                    'attributes' => $optionAttributes,
-                ];
-
-                continue;
-            }
-
-            $optgroupDefault = $this->getProxy()->getOptgroupDefault();
-
-            // No optgroup_default has been provided. Line up without a group
-            if (is_null($optgroupDefault)) {
-                $options[] = ['label' => $label, 'value' => $value, 'attributes' => $optionAttributes];
-
-                continue;
-            }
-
-            // Line up entry with optgroup_default
-            $options[$optgroupDefault]['label'] = $optgroupDefault;
-            $options[$optgroupDefault]['options'][] = [
-                'label' => $label,
-                'value' => $value,
-                'attributes' => $optionAttributes,
-            ];
-        }
-
-        $this->valueOptions = $options;
     }
 }
