@@ -9,12 +9,32 @@ trait Datatype
     /**
      * @var bool
      */
+    protected $primary = false;
+
+    /**
+     * @var bool
+     */
     protected $listed = false;
 
     /**
      * @var bool
      */
-    protected $primary = false;
+    protected $required = false;
+
+    /**
+     * @var bool
+     */
+    protected $filterable = false;
+
+    /**
+     * @var bool
+     */
+    protected $searchable = false;
+
+    /**
+     * @var string|null
+     */
+    protected $defaultSort = null;
 
 
 
@@ -50,6 +70,71 @@ trait Datatype
         $this->primary = $primary;
     }
 
+    /**
+     * @return bool
+     */
+    public function isRequired()
+    {
+        return $this->required;
+    }
+
+    /**
+     * @param bool $required
+     */
+    public function setRequired($required)
+    {// TODO: REQUIRED IN OPTIONS
+//        $this->setAttribute('required', 'required');
+        $this->required = $required;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isFilterable()
+    {
+        return $this->filterable;
+    }
+
+    /**
+     * @param bool $filterable
+     */
+    public function setFilterable($filterable)
+    {
+        $this->filterable = $filterable;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSearchable()
+    {
+        return $this->searchable;
+    }
+
+    /**
+     * @param bool $searchable
+     */
+    public function setSearchable($searchable)
+    {
+        $this->searchable = $searchable;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getDefaultSort()
+    {
+        return $this->defaultSort;
+    }
+
+    /**
+     * @param null|string $defaultSort
+     */
+    public function setDefaultSort($defaultSort)
+    {
+        $this->defaultSort = $defaultSort;
+    }
+
 
 
     /**
@@ -71,6 +156,8 @@ trait Datatype
         } else {
             $options['primary'] = $this->isPrimary();
         }
+
+
 
         parent::setOptions($options);
         return $this;

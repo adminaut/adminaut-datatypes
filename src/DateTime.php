@@ -16,6 +16,10 @@ class DateTime extends \Zend\Form\Element\DateTime
         setOptions as datatypeSetOptions;
     }
 
+    protected $attributes = [
+        'type' => 'datatypeDateTime',
+    ];
+
     /**
      * @var string
      */
@@ -27,11 +31,12 @@ class DateTime extends \Zend\Form\Element\DateTime
      */
     public function setOptions($options)
     {
-        if (!isset($options['add-on-append'])) {
-            $options['add-on-append'] = '<i class="fa fa-calendar"></i>';
+        if (!isset($options['add-on-prepend'])) {
+            $options['add-on-prepend'] = '<i class="fa fa-calendar"></i>';
         }
 
         $this->datatypeSetOptions($options);
+
         parent::setOptions($options);
         return $this;
     }
@@ -40,7 +45,7 @@ class DateTime extends \Zend\Form\Element\DateTime
      * @param bool|true $returnFormattedValue
      * @return mixed|string
      */
-    public function getValue($returnFormattedValue = true)
+    /*public function getValue($returnFormattedValue = true)
     {
         $value = parent::getValue();
         if($value === null || (gettype($value) == "object" && ($value->getTimestamp() === false || $value->getTimestamp() === -3600))) {
@@ -52,14 +57,17 @@ class DateTime extends \Zend\Form\Element\DateTime
         }
         $format = $this->getFormat();
         return $value->format($format);
-    }
+    }*/
 
     /**
      * @return PhpDateTime
      */
     public function getInsertValue()
     {
-        return new \DateTime($this->getValue());
+        if(!empty($this->getValue())) {
+            return new \DateTime($this->getValue());
+        }
+        return null;
     }
 
     /**
@@ -67,8 +75,21 @@ class DateTime extends \Zend\Form\Element\DateTime
      */
     public function getListedValue()
     {
-        $value = new \DateTime($this->getValue());
-        return $value->format($this->getFormat());
+        if($this->getValue()) {
+            $value = new \DateTime($this->getValue());
+            return $value->format($this->getFormat());
+        }
+        return "";
+    }
+
+    public function getEditValue()
+    {
+        if($this->getValue()) {
+            $value = new \DateTime($this->getValue());
+            return $value->format($this->getFormat());
+        } else {
+            return "";
+        }
     }
 
     /**
@@ -84,5 +105,14 @@ class DateTime extends \Zend\Form\Element\DateTime
             'baseValue' => $baseValue,
             'step'      => new DateInterval("PT{$stepValue}S"),
         ]);
+    }
+
+    /**
+     * @return array
+     */
+    public function getAttributes()
+    {
+        $this->attributes['id'] = $this->attributes['name'];
+        return $this->attributes;
     }
 }
