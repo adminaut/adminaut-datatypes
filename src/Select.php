@@ -19,7 +19,10 @@ class Select extends \Zend\Form\Element\Select
     public function getListedValue()
     {
         if($this->getValue() !== null) {
-            return $this->getValueOptions()[$this->getValue()];
+            if(isset($this->getValueOptions()[$this->getValue()])) {
+                return $this->getValueOptions()[$this->getValue()];
+            }
+            return "";
         } else {
             return '';
         }
