@@ -40,6 +40,10 @@ class DateTime extends \Zend\Form\Element\DateTime
             $options['add-on-prepend'] = '<i class="fa fa-calendar"></i>';
         }
 
+        if(isset($options['stepping'])) {
+            $this->setStepping($options['stepping']);
+        }
+
         $this->datatypeSetOptions($options);
 
         parent::setOptions($options);
