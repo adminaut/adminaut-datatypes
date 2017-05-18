@@ -69,6 +69,19 @@ class DateTime extends \Zend\Form\Element\DateTime
     }*/
 
     /**
+     * @param mixed $value
+     * @return $this
+     */
+    public function setValue($value) {
+        if(!$value instanceof \DateTime) {
+            $this->value = \DateTime::createFromFormat($this->getFormat(), $value);
+        } else {
+            $this->value = $value;
+        }
+        return $this;
+    }
+
+    /**
      * @return PhpDateTime
      */
     public function getInsertValue()
@@ -85,7 +98,11 @@ class DateTime extends \Zend\Form\Element\DateTime
     public function getListedValue()
     {
         if($this->getValue()) {
-            $value = \DateTime::createFromFormat($this->getFormat(), $this->getValue());
+            if(!$this->getValue() instanceof \DateTime) {
+                $value = \DateTime::createFromFormat($this->getFormat(), $this->getValue());
+            } else {
+                $value = $this->getValue();
+            }
             return $value->format($this->getFormat());
         }
         return "";
@@ -94,7 +111,11 @@ class DateTime extends \Zend\Form\Element\DateTime
     public function getEditValue()
     {
         if($this->getValue()) {
-            $value = \DateTime::createFromFormat($this->getFormat(), $this->getValue());
+            if(!$this->getValue() instanceof \DateTime) {
+                $value = \DateTime::createFromFormat($this->getFormat(), $this->getValue());
+            } else {
+                $value = $this->getValue();
+            }
             return $value->format($this->getFormat());
         } else {
             return "";
