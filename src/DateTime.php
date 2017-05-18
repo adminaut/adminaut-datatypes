@@ -26,6 +26,11 @@ class DateTime extends \Zend\Form\Element\DateTime
     protected $format = 'Y-m-d H:i:s';
 
     /**
+     * @var int
+     */
+    protected $stepping = 1;
+
+    /**
      * @param array|\Traversable $options
      * @return $this
      */
@@ -76,7 +81,7 @@ class DateTime extends \Zend\Form\Element\DateTime
     public function getListedValue()
     {
         if($this->getValue()) {
-            $value = new \DateTime($this->getValue());
+            $value = \DateTime::createFromFormat($this->getFormat(), $this->getValue());
             return $value->format($this->getFormat());
         }
         return "";
@@ -85,11 +90,27 @@ class DateTime extends \Zend\Form\Element\DateTime
     public function getEditValue()
     {
         if($this->getValue()) {
-            $value = new \DateTime($this->getValue());
+            $value = \DateTime::createFromFormat($this->getFormat(), $this->getValue());
             return $value->format($this->getFormat());
         } else {
             return "";
         }
+    }
+
+    /**
+     * @return int
+     */
+    public function getStepping()
+    {
+        return $this->stepping;
+    }
+
+    /**
+     * @param int $stepping
+     */
+    public function setStepping($stepping)
+    {
+        $this->stepping = $stepping;
     }
 
     /**
@@ -98,7 +119,7 @@ class DateTime extends \Zend\Form\Element\DateTime
     protected function getStepValidator()
     {
         $format = $this->getFormat();
-        $stepValue = (isset($this->attributes['step'])) ? $this->attributes['step'] : 1;
+        $stepValue = $this->getStepping();
         $baseValue = (isset($this->attributes['min'])) ? $this->attributes['min'] : date($format);
         return new DateStepValidator([
             'format'    => $format,

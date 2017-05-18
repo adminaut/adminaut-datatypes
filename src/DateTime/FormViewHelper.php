@@ -79,7 +79,7 @@ class FormViewHelper extends ZendFormDateTime
     {
         $element->setAttribute('type', 'datetime');
         $render = parent::render($element);
-        $render .= '<script type="text/javascript">$(\'#'.$element->getAttribute('id').'\').datetimepicker({format: \''.$this->convertPHPToMomentFormat($element->getFormat()).'\'});</script>';
+        $render .= '<script type="text/javascript">$(\'#'.$element->getAttribute('id').'\').datetimepicker({format: \''.$this->convertPHPToMomentFormat($element->getFormat()).'\', stepping:'.$element->getStepping().', sideBySide:true});</script>';
         return $render;
     }
 }
