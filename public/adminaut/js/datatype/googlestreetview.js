@@ -1,20 +1,5 @@
-function placeMarker($element, location) {
-    var marker = $element.data('marker');
-    if (marker == null) {
-        marker = new google.maps.Marker({
-            position: location,
-            map: $element.data('map')
-        });
-        $element.data('marker', marker);
-    } else {
-        marker.setPosition(location);
-    }
-}
-
 function updatePanorama($element, data, status) {
     if (status === 'OK') {
-        placeMarker($element, data.location.latLng);
-
         var panorama = $element.data('panorama');
         panorama.setPano(data.location.pano);
         panorama.setPov({
@@ -22,6 +7,8 @@ function updatePanorama($element, data, status) {
             pitch: 0
         });
         panorama.setVisible(true);
+        $element.data('map').setCenter(data.location.latLng);
+        $element.find('.remove-location-button').show();
     } else {
         console.error('Street View data not found for this location.');
     }
@@ -44,8 +31,8 @@ function getPanoData($element) {
     data.povPitch = panorama.getPov().pitch;
 
     $input.val(JSON.stringify(data));
-    placeMarker($element, panorama.getPosition());
     $element.data('map').setCenter(panorama.getPosition());
+    $element.find('.remove-location-button').show();
 }
 
 (function ($) {
@@ -59,7 +46,6 @@ function getPanoData($element) {
             var $mapDiv = $('#' + identifier + '-map').data('identifier', identifier);
             var $panoDiv = $('#' + identifier + '-panorama').data('identifier', identifier);
             var useGeoLocation = true;
-            var showMarker = false;
             var latitude = 0;
             var longitude = 0;
             var pano = "";
@@ -67,6 +53,13 @@ function getPanoData($element) {
             var povPitch = 0;
             var data = {};
             var init = true;
+            var defaultCenter = $mapDiv.data('default-center');
+            var defaultZoomLevel = $mapDiv.data('default-zoom-level');
+            var downloadLocation = $this.data('download-location');
+            var $locationLatitudeInput = $('input[name="' + $this.data('location-latitude-input') + '"]');
+            var $locationLongitudeInput = $('input[name="' + $this.data('location-longitude-input') + '"]');
+            var centerLocation;
+            var $gmButtonContainer = $this.find('.gm-buttons-container');
 
             if($input.val()) {
                 data = JSON.parse($input.val());
@@ -75,55 +68,112 @@ function getPanoData($element) {
                 pano = data.pano;
                 povHeading = data.povHeading;
                 povPitch = data.povPitch;
-                showMarker = true;
                 useGeoLocation = false;
+                centerLocation = new google.maps.LatLng(latitude, longitude);
+            } else {
+                if(downloadLocation === 'automatic' && ($locationLatitudeInput.val().length || $locationLongitudeInput.val().length)) {
+                    centerLocation = new google.maps.LatLng($locationLatitudeInput.val(), $locationLongitudeInput.val());
+                    useGeoLocation = false;
+                } else {
+                    if (defaultCenter) {
+                        centerLocation = new google.maps.LatLng(defaultCenter.latitude, defaultCenter.longitude);
+                    } else {
+                        centerLocation = new google.maps.LatLng(0, 0);
+                    }
+                }
             }
 
-            var centerLocation = new google.maps.LatLng(latitude, longitude);
-            var markerLocation = new google.maps.LatLng(latitude, longitude);
-
-            if(useGeoLocation && navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(position) {
+            if (useGeoLocation && navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function (position) {
                     centerLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-                }, function() {
+                }, function () {
                     console.log("Your browser not support Geolocation");
                 });
-            } else if(useGeoLocation) {
+            } else if (useGeoLocation) {
                 console.log("Your browser not support Geolocation");
             }
 
             var map = new google.maps.Map($mapDiv[0], {
-                zoom: 4,
+                zoom: defaultZoomLevel || 4,
                 center: centerLocation,
-                streetViewControl: false
+                scrollwheel: false
             });
             var sv = new google.maps.StreetViewService();
             var panorama = new google.maps.StreetViewPanorama($panoDiv[0], {
-                position: markerLocation,
+                position: centerLocation,
                 pov: {
                     heading: povHeading,
                     pitch: povPitch
-                }
+                },
+                scrollwheel: false,
+                fullscreenControl: false,
+                motionTracking: false
             });
+            map.setStreetView(panorama);
 
             $this.data('map', map);
             $this.data('panorama', panorama);
 
-            if (showMarker) {
-                placeMarker($this, markerLocation);
-                map.setZoom(16);
-            } else {
-                map.setZoom(4);
-                map.setCenter(centerLocation);
-                sv.getPanorama({location: markerLocation, radius: 50}, function(data, status) {
-                    updatePanorama($this, data, status);
+            if(downloadLocation !== 'disabled') {
+                map.controls[google.maps.ControlPosition.TOP_RIGHT].push($gmButtonContainer[0]);
+
+                $gmButtonContainer.find('.download-location-button').on('click', function() {
+                    var location = new google.maps.LatLng($locationLatitudeInput.val(), $locationLongitudeInput.val());
+                    sv.getPanorama({location: location, radius: 100}, function(data, status) {
+                        updatePanorama($this, data, status);
+                    });
+                    map.setZoom(18);
                 });
+
+                if(downloadLocation === 'automatic') {
+                    $locationLatitudeInput.on('change', function() {
+                        var location = new google.maps.LatLng($locationLatitudeInput.val(), $locationLongitudeInput.val());
+                        sv.getPanorama({location: location, radius: 50}, function(data, status) {
+                            updatePanorama($this, data, status);
+                        });
+                        map.setZoom(18);
+                    });
+                    $locationLongitudeInput.on('change', function() {
+                        var location = new google.maps.LatLng($locationLatitudeInput.val(), $locationLongitudeInput.val());
+                        sv.getPanorama({location: location, radius: 50}, function(data, status) {
+                            updatePanorama($this, data, status);
+                        });
+                        map.setZoom(18);
+                    });
+                }
+            }
+
+            $gmButtonContainer.find('.remove-location-button').on('click', function() {
+                map.setCenter(defaultCenter);
+                map.setZoom(defaultZoomLevel || 4);
+                map.setCenter(defaultCenter);
+                panorama.setVisible(false);
+                $input.val('');
+                $(this).hide();
+            });
+
+            map.setZoom(Object.keys(data).length > 0 ? 18 : defaultZoomLevel || 4);
+            map.setCenter(centerLocation);
+            sv.getPanorama({location: centerLocation, radius: 50}, function(data, status) {
+                updatePanorama($this, data, status);
+            });
+            if(Object.keys(data).length === 0) {
+                $gmButtonContainer.find('.remove-location-button').hide();
             }
 
             map.addListener('click', function(event) {
+                map.setOptions({scrollwheel:true});
                 sv.getPanorama({location: event.latLng, radius: 50}, function(data, status) {
                     updatePanorama($this, data, status);
                 });
+            });
+
+            google.maps.event.addListener(map, 'center_changed', function(event) {
+                this.setOptions({scrollwheel:true});
+            });
+
+            google.maps.event.addListener(map, 'mouseout', function(event){
+                this.setOptions({scrollwheel:false});
             });
 
             panorama.addListener('pano_changed', function() {
@@ -138,5 +188,12 @@ function getPanoData($element) {
                 getPanoData($this);
             });
         });
+
+        var style = '<style>'
+            + '.gm-button { background-color: #ffffff; border: 0; border-radius: 2px; box-shadow: rgba(0, 0, 0, 0.298039) 0 1px 4px -1px; width: 29px; height: 29px; vertical-align: top; }'
+            + '.gm-buttons-container { margin-right: 10px; margin-top: 10px; }'
+            + '.download-location-button { margin-bottom: 3px; display: block; }'
+            + '</style>';
+        $('head').append(style);
     });
 })(jQuery);

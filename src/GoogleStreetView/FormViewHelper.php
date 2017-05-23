@@ -63,9 +63,12 @@ class FormViewHelper extends AbstractHelper
         $sRender .= '        <div class="col-xs-12"><input type="' . ($datatype->isUseHiddenElement() ? 'hidden' : 'text') . '" 
         name="'.$datatype->getName().'" value="'.$datatype->getEditValue().'" placeholder="'.$datatype->getAttribute('placeholder').'" 
         class="form-control" id="'. $identifier .'-input"></div>';
+        $sRender .= '<div class="gm-buttons-container">';
         if($datatype->getDownloadLocation() !== 'disabled') {
             $sRender .= '        <button class="gm-button download-location-button" type="button"><i class="fa fa-level-down"></i></button>';
         }
+        $sRender .= '    <button class="gm-button remove-location-button" type="button"><i class="fa fa-close"></i></button>';
+        $sRender .= '</div>';
         $sRender .= '    </div><div class="row">';
         $sRender .= '        <div class="col-xs-12 col-sm-4 no-gutter-right"><div class="datatype-streetview-map" style="margin-top: 15px; min-height: 300px;" id="'. $identifier .'-map" '.$mapData.'></div></div>';
         $sRender .= '        <div class="col-xs-12 col-sm-8 no-gutter-left"><div class="datatype-streetview-panorama" style="margin-top: 15px; min-height: 300px;" id="'. $identifier .'-panorama"></div></div>';

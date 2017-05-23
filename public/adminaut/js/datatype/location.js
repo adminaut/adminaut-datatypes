@@ -3,23 +3,23 @@ jQuery.fn.locationDatatype = function() {
     this.data = $datatype.data();
 
     this.useHiddenElement = this.data.useHiddenElement;
-    this.saveAs = this.data.saveAs;
+    //this.saveAs = this.data.saveAs;
     this.separator = this.data.separator;
     this.engine = this.data.engine;
     this.$mainInput = $('input[name="'+ this.data.mainInput +'"]');
-    this.$searchInput = $datatype.find('.search-input');
+    this.$searchContainer = $datatype.find('.datatype-location-search-container');
     this.readOnly = this.data.readonly;
     this.value = this.data.value;
-
-    if(this.data.longitudeElement) {
-        this.$longitudeElement = $('input[name="'+ this.data.longitudeElementName +'"]');
-    }
+    this.defaultCenter = this.data.defaultCenter;
+    this.defaultZoomLevel = this.data.defaultZoomLevel;
+    this.enableDownloadData = this.data.enableDownloadData;
+    this.downloadDataFrom = this.data.downloadDataFrom;
+    this.$longitudeElement = $('input[name="'+ this.data.longitudeElementName +'"]');
 
     if(this.engine === 'google') {
         this.googleMode = this.data.googleMode;
         this.googlePlaceFilter = this.data.googlePlaceFilter;
 
-        console.log(this.data, this.data.$googlePlaceIdElementName);
         if(this.data.googlePlaceIdElementName) {
             this.$googlePlaceIdElement = $('input[name="'+ this.data.googlePlaceIdElementName +'"]');
         }
@@ -32,28 +32,39 @@ jQuery.fn.locationDatatype = function() {
     this.init = function() {
         var $datatype = $(this);
         this.prepareContainer();
-        this.map = new google.maps.Map($(this).find('.datatype-location-map-container')[0]);
+        this.map = this.initMap();
         var value = this.getValue();
         if(typeof(value.latitude) === 'number' && typeof(value.longitude) === 'number' ) {
             this.placeMarker(value);
             this.setCenter(value);
             this.setZoom(18);
         } else {
-            // TODO: default center by config
-            this.setCenter({latitude: 0, longitude: 0});
-            this.setZoom(4);
+            if(this.defaultCenter) {
+                this.setCenter(this.defaultCenter);
+            } else {
+                this.setCenter({latitude: 0, longitude: 0});
+            }
+
+            if(this.defaultCenter) {
+                this.setZoom(this.defaultZoomLevel);
+            } else {
+                this.setZoom(4);
+            }
         }
 
         if(!this.readOnly) {
             this.initSearch();
             this.initClickListener();
+            this.initDownloadDataListener();
         }
+
+        this.initCenterChangedListener();
+        this.initMouseOutListener();
     };
 
     this.prepareContainer = function() {
 
         var $renderInput = $('<div class="row"></div>');
-        console.log(this);
         if(!this.readonly) {
             $renderInput.append($('<div class="col-xs-6"></div>').append(this.$mainInput.addClass('form-control')));
             if (this.$longitudeElement) {
@@ -62,9 +73,9 @@ jQuery.fn.locationDatatype = function() {
         }
 
         var $renderMap = $('<div class="row"></div>');
-        var $mapContainer = $('<div class="datatype-location-map-container" style="margin-top: 15px; min-height: 300px;"></div>').appendTo($renderMap);
+        var $mapContainer = $('<div class="datatype-location-map-container" style="margin-top: 15px; min-height: 300px;"></div>').appendTo($('<div class="col-xs-12"></div>').appendTo($renderMap));
         if(!this.readOnly) {
-            $mapContainer.append(this.$searchInput);
+            $mapContainer.append(this.$searchContainer);
         }
         // var $renderMap = $('<div class="row"><div class="col-xs-12"><div class="datatype-location-map-container" style="margin-top: 15px; min-height: 300px;">' +  + '</div></div></div>')
         $(this).html($renderInput).append($renderMap);
@@ -73,6 +84,14 @@ jQuery.fn.locationDatatype = function() {
     this.setCenter = function(location) {
         if(this.engine === 'google') {
             this.map.setCenter({lat: location.latitude, lng: location.longitude});
+        }
+    };
+
+    this.initMap = function() {
+        if(this.engine === 'google') {
+            return new google.maps.Map($(this).find('.datatype-location-map-container')[0], {
+                scrollwheel: false
+            });
         }
     };
 
@@ -93,25 +112,27 @@ jQuery.fn.locationDatatype = function() {
     this.getGooglePlaceInfo = function(placeid, callback) {
         var $datatype = $(this);
 
-        if(this.place) {
-            if (this.place.place_id === placeid) {
-                return this.place;
-            }
-        } else {
-            var placeidService = new google.maps.places.PlacesService(this.map);
-            var request = {
-                placeId: placeid
-            };
-
-            var self = this;
-            placeidService.getDetails(request, function (place, status) {
-                if (status === google.maps.places.PlacesServiceStatus.OK) {
-                    self.place = place;
+        if(placeid) {
+            if (this.place) {
+                if (this.place.place_id === placeid) {
+                    return this.place;
                 }
-            });
-        }
+            } else {
+                var placeidService = new google.maps.places.PlacesService(this.map);
+                var request = {
+                    placeId: placeid
+                };
 
-        return this.place;
+                var self = this;
+                placeidService.getDetails(request, function (place, status) {
+                    if (status === google.maps.places.PlacesServiceStatus.OK) {
+                        self.place = place;
+                    }
+                });
+            }
+
+            return this.place;
+        }
     };
 
     this.setZoom = function(level) {
@@ -128,6 +149,7 @@ jQuery.fn.locationDatatype = function() {
         } else {
             if(this.engine === 'google') {
                 if(this.value.googlePlaceId !== undefined) {
+                    console.log(this.value);
                     var place = this.getGooglePlaceInfo(this.value.googlePlaceId);
 
                     this.value.latitude = place.geometry.location.lat;
@@ -144,9 +166,9 @@ jQuery.fn.locationDatatype = function() {
         var self = this;
 
         if(this.engine === 'google') {
-            this.autocomplete = new google.maps.places.Autocomplete(this.$searchInput[0]);
+            this.autocomplete = new google.maps.places.Autocomplete(this.$searchContainer.find('.search-input')[0]);
             this.autocomplete.bindTo('bounds', this.map);
-            this.map.controls[google.maps.ControlPosition.TOP_LEFT].push(this.$searchInput[0]);
+            this.map.controls[google.maps.ControlPosition.TOP_LEFT].push(this.$searchContainer[0]);
 
             this.autocomplete.addListener('place_changed', function() {
                 var place = self.autocomplete.getPlace();
@@ -170,6 +192,7 @@ jQuery.fn.locationDatatype = function() {
 
         if(this.engine === 'google') {
             google.maps.event.addListener(this.map, 'click', function (event) {
+                self.map.setOptions({scrollwheel:true});
                 self.getGooglePlaceInfo(event.placeId);
                 if(self.googleMode === 'coordinates') {
                     self.value.latitude = event.latLng.lat();
@@ -196,57 +219,49 @@ jQuery.fn.locationDatatype = function() {
         }
     };
 
+    this.initDownloadDataListener = function() {
+        var self = this;
+
+        if(this.$searchContainer.find('.download-data-button').length) {
+            this.$searchContainer.find('.download-data-button').on('click', function() {
+                var result = [];
+
+                $.each(self.downloadDataFrom, function(key, value) {
+                    result.push($(document).find('*[name="'+value+'"]').val());
+                });
+
+                self.$searchContainer.find('.search-input').val(result.join(', ')).focus();
+            });
+        }
+    };
+
+    this.initMouseOutListener = function() {
+        if(this.engine === 'google') {
+            google.maps.event.addListener(this.map, 'mouseout', function(event){
+                this.setOptions({scrollwheel:false});
+            });
+        }
+    };
+
+    this.initCenterChangedListener = function() {
+        if(this.engine === 'google') {
+            google.maps.event.addListener(this.map, 'center_changed', function(event) {
+                this.setOptions({scrollwheel:true});
+            });
+        }
+    };
+
     this.updateInputsValue = function() {
-        if(this.saveAs === 'elements') {
+        if(this.engine === 'google') {
+            this.$mainInput.val(this.value.latitude.toFixed(6)).trigger('change');
+            this.$longitudeElement.val(this.value.longitude.toFixed(6)).trigger('change');
 
-            if(this.engine === 'google') {
-                this.$mainInput.val(this.value.latitude.toFixed(6));
-                if(this.$longitudeElement) {
-                    this.$longitudeElement.val(this.value.longitude.toFixed(6));
-                }
-
-                if(this.$googlePlaceIdElement) {
-                    this.$googlePlaceIdElement.val(this.value.googlePlaceId);
-                }
-            } else {
-                this.$mainInput.val(this.value.latitude.toFixed(6));
-                if(this.$longitudeElement) {
-                    this.$longitudeElement.val(this.value.longitude.toFixed(6));
-                }
+            if(this.$googlePlaceIdElement) {
+                this.$googlePlaceIdElement.val(this.value.googlePlaceId).trigger('change');
             }
-
-        } else if(this.saveAs === 'json') {
-            var jsonValue = {};
-
-            if(this.engine === 'google') {
-                if(this.googleMode !== 'places') {
-                    jsonValue.latitude = this.value.latitude.toFixed(6);
-                    jsonValue.longitude = this.value.longitude.toFixed(6);
-                }
-
-                if(this.googleMode !== 'coordinates') {
-                    jsonValue.googlePlaceId = this.value.googlePlaceId;
-                }
-            } else {
-                jsonValue.latitude = this.value.latitude.toFixed(6);
-                jsonValue.longitude = this.value.longitude.toFixed(6);
-            }
-
-            this.$mainInput.val(JSON.stringify(jsonValue));
-        } else if(this.saveAs === 'string') {
-            var value = "";
-
-            if(this.engine === 'google') {
-                if(this.googleMode !== 'places') {
-                    value = this.value.latitude.toFixed(6) + this.separator + this.value.longitude.toFixed(6);
-                }
-
-                if(this.googleMode !== 'coordinates') {
-                    value += (value.length > 0 ? this.separator : '') + this.value.googlePlaceId;
-                }
-            } else {
-                value = this.value.latitude.toFixed(6) + this.separator + this.value.longitude.toFixed(6);
-            }
+        } else {
+            this.$mainInput.val(this.value.latitude.toFixed(6)).trigger('change');
+            this.$longitudeElement.val(this.value.longitude.toFixed(6)).trigger('change');
         }
     };
 
@@ -258,9 +273,11 @@ jQuery.fn.locationDatatype = function() {
     var style = '<style>'
         + '.datatype-location-map-container { margin-top: 15px; min-height: 300px; }'
         + '.controls { display: none; }'
-        + '.gm-style .controls { display: block; }'
-        + '.controls {background-color: #fff;border-radius: 2px;border: 1px solid transparent;box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);box-sizing: border-box;font-family: Roboto;font-size: 15px;font-weight: 300;height: 29px;margin-left: 17px;margin-top: 10px;outline: none;padding: 0 11px 0 13px;text-overflow: ellipsis;width: 400px;}'
+        + '.gm-style .controls { display: inline-block; }'
+        + '.datatype-location-search-container { padding-top: 10px; }'
+        + '.controls {background-color: #fff;border-radius: 2px;border: 1px solid transparent;box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);box-sizing: border-box;font-family: Roboto;font-size: 15px;font-weight: 300;height: 29px;margin-left: 17px;outline: none;padding: 0 11px 0 13px;text-overflow: ellipsis;width: 400px;vertical-align: top;}'
         + '.controls:focus {border-color: #4d90fe;}'
+        + '.gm-button { background-color: #ffffff; border: 0; border-radius: 2px; box-shadow: rgba(0, 0, 0, 0.298039) 0 1px 4px -1px; width: 29px; height: 29px; vertical-align: top; }'
         + '</style>';
 
     $('head').append(style);
