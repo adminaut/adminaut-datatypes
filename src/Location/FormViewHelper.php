@@ -80,6 +80,7 @@ class FormViewHelper extends AbstractHelper
         if($datatype->isEnableDownloadData()) {
             $sRender .= '        <button class="gm-button download-data-button" type="button"><i class="fa fa-level-down"></i></button>';
         }
+        $sRender .= '        <button class="gm-button remove-data-button" type="button"><i class="fa fa-close"></i></button>';
         $sRender .= '    </div>';
         $sRender .= '</div>';
 

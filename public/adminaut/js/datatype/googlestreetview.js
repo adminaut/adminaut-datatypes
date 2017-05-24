@@ -107,7 +107,8 @@ function getPanoData($element) {
                 },
                 scrollwheel: false,
                 fullscreenControl: false,
-                motionTracking: false
+                motionTracking: false,
+                motionTrackingControl: false
             });
             map.setStreetView(panorama);
 

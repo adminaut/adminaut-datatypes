@@ -50,12 +50,15 @@ jQuery.fn.locationDatatype = function() {
             } else {
                 this.setZoom(4);
             }
+
+            this.$searchContainer.find('.remove-data-button').hide();
         }
 
         if(!this.readOnly) {
             this.initSearch();
             this.initClickListener();
             this.initDownloadDataListener();
+            this.initRemoveDataListener();
         }
 
         this.initCenterChangedListener();
@@ -106,7 +109,15 @@ jQuery.fn.locationDatatype = function() {
                 this.marker.setPosition({lat: location.latitude, lng: location.longitude});
             }
         }
+    };
 
+    this.removeMarker = function() {
+        if(this.engine === 'google') {
+            if (this.marker !== null) {
+                this.marker.setMap(null);
+                this.marker = null;
+            }
+        }
     };
 
     this.getGooglePlaceInfo = function(placeid, callback) {
@@ -235,6 +246,28 @@ jQuery.fn.locationDatatype = function() {
         }
     };
 
+    this.initRemoveDataListener = function() {
+        var self = this;
+
+        if(this.$searchContainer.find('.remove-data-button').length) {
+            this.$searchContainer.find('.remove-data-button').on('click', function() {
+                self.$mainInput.val('');
+                self.$longitudeElement.val('');
+
+                if(self.engine === 'google') {
+                    if(self.$googlePlaceIdElement) {
+                        self.$googlePlaceIdElement.val('');
+                    }
+                }
+
+                self.setCenter(self.defaultCenter);
+                self.setZoom(self.defaultZoomLevel);
+                self.removeMarker();
+                $(this).hide();
+            });
+        }
+    };
+
     this.initMouseOutListener = function() {
         if(this.engine === 'google') {
             google.maps.event.addListener(this.map, 'mouseout', function(event){
@@ -263,6 +296,8 @@ jQuery.fn.locationDatatype = function() {
             this.$mainInput.val(this.value.latitude.toFixed(6)).trigger('change');
             this.$longitudeElement.val(this.value.longitude.toFixed(6)).trigger('change');
         }
+
+        this.$searchContainer.find('.remove-data-button').show();
     };
 
     return this.init();
