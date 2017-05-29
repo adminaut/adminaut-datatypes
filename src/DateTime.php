@@ -87,7 +87,7 @@ class DateTime extends \Zend\Form\Element\DateTime
     public function getInsertValue()
     {
         if(!empty($this->getValue())) {
-            return new \DateTime($this->getValue());
+            return \DateTime::createFromFormat($this->getFormat(), $this->getValue());
         }
         return null;
     }
