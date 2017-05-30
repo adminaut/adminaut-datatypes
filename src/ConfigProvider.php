@@ -56,6 +56,7 @@ class ConfigProvider
                 'datatypeFormGoogleStreetView'          => \Adminaut\Datatype\GoogleStreetView\FormViewHelper::class,
                 'datatypeFormGooglePlaceId'          => \Adminaut\Datatype\GooglePlaceId\FormViewHelper::class,
                 'datatypeFormDateTime'          => \Adminaut\Datatype\DateTime\FormViewHelper::class,
+                'datatypeFormFile'          => \Adminaut\Datatype\File\FormViewHelper::class,
 
                 // detail
                 'datatypeDetail'             => \Adminaut\Datatype\View\Helper\datatypeDetailViewHelper::class,

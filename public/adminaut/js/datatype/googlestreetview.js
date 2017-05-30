@@ -147,18 +147,13 @@ function getPanoData($element) {
             $gmButtonContainer.find('.remove-location-button').on('click', function() {
                 map.setCenter(defaultCenter);
                 map.setZoom(defaultZoomLevel || 4);
-                map.setCenter(defaultCenter);
                 panorama.setVisible(false);
                 $input.val('');
                 $(this).hide();
             });
 
             map.setZoom(Object.keys(data).length > 0 ? 18 : defaultZoomLevel || 4);
-            map.setCenter(centerLocation);
-            sv.getPanorama({location: centerLocation, radius: 50}, function(data, status) {
-                updatePanorama($this, data, status);
-            });
-            if(Object.keys(data).length === 0) {
+            if (Object.keys(data).length === 0) {
                 $gmButtonContainer.find('.remove-location-button').hide();
             }
 

@@ -10,6 +10,10 @@ use Zend\Form\Element;
  */
 class File extends Element\File
 {
+    protected $attributes = [
+        'type' => 'datatypeFile',
+    ];
+
     /**
      * @var \Adminaut\Entity\File
      */

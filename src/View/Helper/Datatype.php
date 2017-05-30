@@ -17,6 +17,7 @@ class Datatype extends TwbBundleFormElement
         $this->addType('datatypeGoogleStreetView', 'datatypeFormGoogleStreetView');
         $this->addType('datatypeGooglePlaceId', 'datatypeFormGooglePlaceId');
         $this->addType('datatypeDateTime', 'datatypeFormDateTime');
+        $this->addType('datatypeFile', 'datatypeFormFile');
 
         parent::__construct($options);
     }
