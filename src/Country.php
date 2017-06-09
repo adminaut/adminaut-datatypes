@@ -358,8 +358,8 @@ class Country extends Select
      */
     public function getValueOptions()
     {
+        $valueOptions = ['' => 'Select country...'];
         if(is_array($this->getAvailableCountries())) {
-            $valueOptions = array();
             foreach($this->getAvailableCountries() as $country) {
                 if(!isset($this->getCountries()[$country])) {
                     continue;
@@ -370,7 +370,7 @@ class Country extends Select
 
             return $valueOptions;
         } else {
-            return $this->getCountries();
+            return array_merge($valueOptions, $this->getCountries());
         }
     }
 
