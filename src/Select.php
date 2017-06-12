@@ -13,6 +13,10 @@ class Select extends \Zend\Form\Element\Select
         setOptions as datatypeSetOptions;
     }
 
+    protected $attributes = [
+        'type' => 'datatypeSelect',
+    ];
+
     /**
      * @return mixed
      */
