@@ -1,5 +1,7 @@
 <?php
 namespace Adminaut\Datatype\Reference;
+use DoctrineModule\Form\Element\Exception\InvalidRepositoryResultException;
+use ReflectionMethod;
 use RuntimeException;
 
 /**
@@ -19,6 +21,13 @@ class Proxy extends \DoctrineModule\Form\Element\Proxy
     protected $loaded = false;
 
     /**
+     * @var array
+     */
+    protected $orderby = [
+        'id' => 'ASC'
+    ];
+
+    /**
      * @param $objects
      */
     public function setObjects($objects) {
@@ -31,6 +40,10 @@ class Proxy extends \DoctrineModule\Form\Element\Proxy
 
         if (isset($options['mask'])) {
             $this->setMask($options['mask']);
+        }
+
+        if (isset($options['orderby'])) {
+            $this->setOrderby($options['orderby']);
         }
     }
 
@@ -48,6 +61,22 @@ class Proxy extends \DoctrineModule\Form\Element\Proxy
     public function setMask($mask)
     {
         $this->mask = $mask;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOrderby()
+    {
+        return $this->orderby;
+    }
+
+    /**
+     * @param array $orderby
+     */
+    public function setOrderby($orderby)
+    {
+        $this->orderby = $orderby;
     }
 
     /**
@@ -69,7 +98,66 @@ class Proxy extends \DoctrineModule\Form\Element\Proxy
     protected function loadObjects()
     {
         if(!$this->loaded) {
-            parent::loadObjects();
+            if (! empty($this->objects)) {
+                return;
+            }
+
+            $findMethod = (array) $this->getFindMethod();
+
+            if (! $findMethod) {
+                $findMethodName = 'findBy';
+                $repository     = $this->objectManager->getRepository($this->targetClass);
+                $objects        = $repository->findBy([
+                    'deleted' => false
+                ], $this->getOrderby());
+            } else {
+                if (! isset($findMethod['name'])) {
+                    throw new RuntimeException('No method name was set');
+                }
+                $findMethodName   = $findMethod['name'];
+                $findMethodParams = isset($findMethod['params']) ? array_change_key_case($findMethod['params']) : [];
+                $repository       = $this->objectManager->getRepository($this->targetClass);
+
+                if (! method_exists($repository, $findMethodName)) {
+                    throw new RuntimeException(
+                        sprintf(
+                            'Method "%s" could not be found in repository "%s"',
+                            $findMethodName,
+                            get_class($repository)
+                        )
+                    );
+                }
+
+                $r    = new ReflectionMethod($repository, $findMethodName);
+                $args = [];
+
+                foreach ($r->getParameters() as $param) {
+                    if (array_key_exists(strtolower($param->getName()), $findMethodParams)) {
+                        $args[] = $findMethodParams[strtolower($param->getName())];
+                    } elseif ($param->isDefaultValueAvailable()) {
+                        $args[] = $param->getDefaultValue();
+                    } elseif (! $param->isOptional()) {
+                        throw new RuntimeException(
+                            sprintf(
+                                'Required parameter "%s" with no default value for method "%s" in repository "%s"'
+                                . ' was not provided',
+                                $param->getName(),
+                                $findMethodName,
+                                get_class($repository)
+                            )
+                        );
+                    }
+                }
+                $objects = $r->invokeArgs($repository, $args);
+            }
+
+            $this->guardForArrayOrTraversable(
+                $objects,
+                sprintf('%s::%s() return value', get_class($repository), $findMethodName),
+                'DoctrineModule\Form\Element\Exception\InvalidRepositoryResultException'
+            );
+
+            $this->objects = $objects;
         }
     }
 

@@ -53,7 +53,7 @@ class FormViewHelper extends AbstractHelper
 
             }
 
-            return $selectViewHelper->render($select);
+            $sRender = $selectViewHelper->render($select);
         } elseif($datatype->getVisualization() == 'radio') {
             $radio = new Radio();
             $radioViewHelper = $this->getView()->plugin('formRadio');
@@ -68,7 +68,10 @@ class FormViewHelper extends AbstractHelper
                 }
             }
 
-            return $radioViewHelper->render($radio);
+            $sRender = $radioViewHelper->render($radio);
         }
+
+//        $sRender .= '<p class="help-block">'. sprintf('New record can be added <a href="%s">here</a>', '#') .'</p>';
+        return $sRender;
     }
 }
