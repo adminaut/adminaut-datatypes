@@ -59,6 +59,7 @@ jQuery.fn.locationDatatype = function() {
             this.initClickListener();
             this.initDownloadDataListener();
             this.initRemoveDataListener();
+            this.initLocationInputsChangeListener();
         }
 
         this.initCenterChangedListener();
@@ -282,6 +283,31 @@ jQuery.fn.locationDatatype = function() {
                 this.setOptions({scrollwheel:true});
             });
         }
+    };
+
+    this.initLocationInputsChangeListener = function() {
+        var self = this;
+        this.$mainInput.on('change', function() {
+            self.value.latitude = parseFloat($(this).val());
+            self.value.googlePlaceId = "";
+
+            self.placeMarker(self.value);
+            self.setCenter(self.value);
+            if(self.$googlePlaceIdElement) {
+                self.$googlePlaceIdElement.val(self.value.googlePlaceId).trigger('change');
+            }
+        });
+
+        this.$longitudeElement.on('change', function() {
+            self.value.longitude = parseFloat($(this).val());
+            self.value.googlePlaceId = "";
+
+            self.placeMarker(self.value);
+            self.setCenter(self.value);
+            if(self.$googlePlaceIdElement) {
+                self.$googlePlaceIdElement.val(self.value.googlePlaceId).trigger('change');
+            }
+        });
     };
 
     this.updateInputsValue = function() {
