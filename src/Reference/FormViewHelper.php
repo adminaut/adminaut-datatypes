@@ -4,12 +4,27 @@ namespace Adminaut\Datatype\Reference;
 use Adminaut\Datatype\Radio;
 use Adminaut\Datatype\Reference;
 use Adminaut\Datatype\Select;
+use Adminaut\Manager\AdminModulesManager;
 use Zend\Form\ElementInterface;
 use Zend\Form\View\Helper\AbstractHelper;
 use Zend\Form\View\Helper\FormSelect;
 
 class FormViewHelper extends AbstractHelper
 {
+    /**
+     * @var AdminModulesManager
+     */
+    protected $adminModulesManager;
+
+    /**
+     * FormViewHelper constructor.
+     * @param AdminModulesManager $adminModulesManager
+     */
+    public function __construct($adminModulesManager)
+    {
+        $this->setAdminModulesManager($adminModulesManager);
+    }
+
     /**
      * Invoke helper as functor
      *
@@ -71,7 +86,26 @@ class FormViewHelper extends AbstractHelper
             $sRender = $radioViewHelper->render($radio);
         }
 
-//        $sRender .= '<p class="help-block">'. sprintf('New record can be added <a href="%s">here</a>', '#') .'</p>';
+        if(!$datatype->isSubEntityReference()) {
+            $moduleId = $this->getAdminModulesManager()->getModuleByEntityClass($datatype->getProxy()->getTargetClass());
+            $sRender .= '<p class="help-block">' . sprintf('New record can be added <a href="%s">here</a>', $this->getView()->url('adminaut/module/action', ['module_id' => $moduleId, 'mode' => 'add'])) . '</p>';
+        }
         return $sRender;
+    }
+
+    /**
+     * @return AdminModulesManager
+     */
+    public function getAdminModulesManager()
+    {
+        return $this->adminModulesManager;
+    }
+
+    /**
+     * @param AdminModulesManager $adminModulesManager
+     */
+    public function setAdminModulesManager($adminModulesManager)
+    {
+        $this->adminModulesManager = $adminModulesManager;
     }
 }

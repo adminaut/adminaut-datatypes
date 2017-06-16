@@ -50,7 +50,6 @@ class ConfigProvider
                 'datatypeFormSelect'           => \Adminaut\Datatype\Select\FormViewHelper::class,
                 'datatypeFormCheckbox'           => \Adminaut\Datatype\Checkbox\FormViewHelper::class,
                 'datatypeFormMultiCheckbox'           => \Adminaut\Datatype\MultiCheckbox\FormViewHelper::class,
-                'datatypeFormReference'          => \Adminaut\Datatype\Reference\FormViewHelper::class,
                 'datatypeFormMultiReference'          => \Adminaut\Datatype\MultiReference\FormViewHelper::class,
                 'datatypeFormLocation'          => \Adminaut\Datatype\Location\FormViewHelper::class,
                 'datatypeFormGoogleMap'          => \Adminaut\Datatype\GoogleMap\FormViewHelper::class,
@@ -74,7 +73,10 @@ class ConfigProvider
             ],
             'factories' => [
                 FormRow::class               => View\Helper\Factory\FormRowFactory::class,
-                \Adminaut\Datatype\View\Helper\Datatype::class  => DatatypeFactory::class
+                \Adminaut\Datatype\View\Helper\Datatype::class  => DatatypeFactory::class,
+
+                //form
+                'datatypeFormReference'          => \Adminaut\Datatype\Reference\Factory\FormViewHelperFactory::class,
             ]
         ];
     }

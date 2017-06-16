@@ -71,6 +71,11 @@ class Reference extends Element implements InputProviderInterface
     protected $visualization = "select";
 
     /**
+     * @var bool
+     */
+    protected $subEntityReference = false;
+
+    /**
      * @return Proxy
      */
     public function getProxy()
@@ -398,6 +403,22 @@ class Reference extends Element implements InputProviderInterface
         } else {
             $this->visualization = 'select';
         }
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSubEntityReference()
+    {
+        return $this->subEntityReference;
+    }
+
+    /**
+     * @param bool $isSubEntityReference
+     */
+    public function setSubEntityReference($isSubEntityReference)
+    {
+        $this->subEntityReference = $isSubEntityReference;
     }
 
     public function getPrimaryProperty()
