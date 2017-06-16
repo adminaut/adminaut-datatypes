@@ -31,6 +31,11 @@ class DateTime extends \Zend\Form\Element\DateTime
     protected $stepping = 1;
 
     /**
+     * @var bool
+     */
+    protected $useCurrent = false;
+
+    /**
      * @param array|\Traversable $options
      * @return $this
      */
@@ -40,8 +45,12 @@ class DateTime extends \Zend\Form\Element\DateTime
             $options['add-on-prepend'] = '<i class="fa fa-calendar"></i>';
         }
 
-        if(isset($options['stepping'])) {
+        if (isset($options['stepping'])) {
             $this->setStepping($options['stepping']);
+        }
+
+        if (isset($options['useCurrent'])) {
+            $this->setUseCurrent($options['useCurrent']);
         }
 
         $this->datatypeSetOptions($options);
@@ -72,8 +81,9 @@ class DateTime extends \Zend\Form\Element\DateTime
      * @param mixed $value
      * @return $this
      */
-    public function setValue($value) {
-        if(!$value instanceof \DateTime) {
+    public function setValue($value)
+    {
+        if (!$value instanceof \DateTime) {
             $this->value = \DateTime::createFromFormat($this->getFormat(), $value);
         } else {
             $this->value = $value;
@@ -86,7 +96,7 @@ class DateTime extends \Zend\Form\Element\DateTime
      */
     public function getInsertValue()
     {
-        if(!empty($this->getValue())) {
+        if (!empty($this->getValue())) {
             return \DateTime::createFromFormat($this->getFormat(), $this->getValue());
         }
         return null;
@@ -97,8 +107,8 @@ class DateTime extends \Zend\Form\Element\DateTime
      */
     public function getListedValue()
     {
-        if($this->getValue()) {
-            if(!$this->getValue() instanceof \DateTime) {
+        if ($this->getValue()) {
+            if (!$this->getValue() instanceof \DateTime) {
                 $value = \DateTime::createFromFormat($this->getFormat(), $this->getValue());
             } else {
                 $value = $this->getValue();
@@ -110,8 +120,8 @@ class DateTime extends \Zend\Form\Element\DateTime
 
     public function getEditValue()
     {
-        if($this->getValue()) {
-            if(!$this->getValue() instanceof \DateTime) {
+        if ($this->getValue()) {
+            if (!$this->getValue() instanceof \DateTime) {
                 $value = \DateTime::createFromFormat($this->getFormat(), $this->getValue());
             } else {
                 $value = $this->getValue();
@@ -139,6 +149,22 @@ class DateTime extends \Zend\Form\Element\DateTime
     }
 
     /**
+     * @return bool
+     */
+    public function isUseCurrent()
+    {
+        return $this->useCurrent;
+    }
+
+    /**
+     * @param bool $useCurrent
+     */
+    public function setUseCurrent($useCurrent)
+    {
+        $this->useCurrent = $useCurrent;
+    }
+
+    /**
      * @return DateStepValidator
      */
     protected function getStepValidator()
@@ -147,9 +173,9 @@ class DateTime extends \Zend\Form\Element\DateTime
         $stepValue = $this->getStepping();
         $baseValue = (isset($this->attributes['min'])) ? $this->attributes['min'] : date($format);
         return new DateStepValidator([
-            'format'    => $format,
+            'format' => $format,
             'baseValue' => $baseValue,
-            'step'      => new DateInterval("PT{$stepValue}S"),
+            'step' => new DateInterval("PT{$stepValue}S"),
         ]);
     }
 

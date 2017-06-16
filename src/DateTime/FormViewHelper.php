@@ -1,9 +1,8 @@
 <?php
+
 namespace Adminaut\Datatype\DateTime;
 
 use Adminaut\Datatype\DateTime;
-use TwbBundle\Form\View\Helper\TwbBundleFormElement;
-
 use Zend\Form\ElementInterface;
 use Zend\Form\View\Helper\FormDateTime as ZendFormDateTime;
 
@@ -72,14 +71,24 @@ class FormViewHelper extends ZendFormDateTime
     }
 
     /**
-     * @param DateTime $element
+     * @param DateTime|ElementInterface $element
      * @return string
      */
-	public function render(ElementInterface $element)
+    public function render(ElementInterface $element)
     {
         $element->setAttribute('type', 'datetime');
+
+        $dtpOptions = "format: '" . $this->convertPHPToMomentFormat($element->getFormat()) . "',";
+        $dtpOptions .= "stepping:'" . $element->getStepping() . "',";
+        if (false === $element->isUseCurrent()) {
+            $dtpOptions .= "useCurrent:false,";
+        }
+        $dtpOptions .= "sideBySide:true"; // last one is without coma!
+
         $render = parent::render($element);
-        $render .= '<script type="text/javascript">$(\'#'.$element->getAttribute('id').'\').datetimepicker({format: \''.$this->convertPHPToMomentFormat($element->getFormat()).'\', stepping:'.$element->getStepping().', sideBySide:true});</script>';
+        $render .= '<script type="text/javascript">';
+        $render .= "$('#" . $element->getAttribute('id') . "').datetimepicker({" . $dtpOptions . "});";
+        $render .= '</script>';
         return $render;
     }
 }
