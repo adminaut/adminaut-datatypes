@@ -26,7 +26,7 @@ class Number extends \Zend\Form\Element\Number
      */
     public function getInsertValue()
     {
-        return $this->getValue();
+        return (int) $this->getValue();
     }
 
     /**
