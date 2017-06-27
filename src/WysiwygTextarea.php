@@ -12,7 +12,7 @@ class WysiwygTextarea extends \Zend\Form\Element\Textarea implements DatatypeInt
         setOptions as datatypeSetOptions;
     }
 
-    const EDITORS = ['none', 'bootstrap', 'ckeditor'];
+    const EDITORS = ['none', 'bootstrap', 'ckeditor', 'tinymce'];
 
     protected $attributes = [
         'type' => 'datatypeWysiwygTextarea',

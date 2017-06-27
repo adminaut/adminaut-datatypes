@@ -46,6 +46,13 @@ $(document).ready(function (){
 });
 </script>' . PHP_EOL;
                 break;
+            case 'tinymce':
+                $render .= '<script>
+$(document).ready(function (){
+    tinymce.init({selector:\'#' . $element->getAttribute('id') . '\'});
+});
+</script>' . PHP_EOL;
+                break;
             case 'none':
             default:
                 break;
