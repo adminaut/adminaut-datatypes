@@ -1,15 +1,15 @@
 <?php
 
-namespace Adminaut\Datatype\WysiwygTextarea;
+namespace Adminaut\Datatype\Textarea;
 
 use Zend\Form\ElementInterface;
 use Zend\Form\View\Helper\FormTextarea;
 
 /**
- * Class WysiwygTextareaFormViewHelper
- * @package Adminaut\Datatype\WysiwygTextarea
+ * Class TextareaFormViewHelper
+ * @package Adminaut\Datatype\Textarea
  */
-class WysiwygTextareaFormViewHelper extends FormTextarea
+class TextareaFormViewHelper extends FormTextarea
 {
 
     /**
@@ -37,21 +37,21 @@ class WysiwygTextareaFormViewHelper extends FormTextarea
 $(document).ready(function (){
     $(\'#' . $element->getAttribute('id') . '\').wysihtml5();
 });
-</script>' . PHP_EOL;
+</script>' . PHP_EOL; // todo: append javascript as inline script (bottom of the page)?
                 break;
             case 'ckeditor':
                 $render .= '<script>
 $(document).ready(function (){
     CKEDITOR.replace(\'' . $element->getAttribute('id') . '\');
 });
-</script>' . PHP_EOL;
+</script>' . PHP_EOL; // todo: append javascript as inline script (bottom of the page)?
                 break;
             case 'tinymce':
                 $render .= '<script>
 $(document).ready(function (){
     tinymce.init({selector:\'#' . $element->getAttribute('id') . '\'});
 });
-</script>' . PHP_EOL;
+</script>' . PHP_EOL; // todo: append javascript as inline script (bottom of the page)?
                 break;
             case 'none':
             default:

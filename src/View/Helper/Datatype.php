@@ -11,6 +11,10 @@ use TwbBundle\Options\ModuleOptions;
  */
 class Datatype extends TwbBundleFormElement
 {
+    /**
+     * Datatype constructor.
+     * @param ModuleOptions $options
+     */
     public function __construct(ModuleOptions $options)
     {
         $this->addType('datatypeSelect', 'datatypeFormSelect');
@@ -24,9 +28,8 @@ class Datatype extends TwbBundleFormElement
         $this->addType('datatypeGooglePlaceId', 'datatypeFormGooglePlaceId');
         $this->addType('datatypeDateTime', 'datatypeFormDateTime');
         $this->addType('datatypeFile', 'datatypeFormFile');
-        $this->addType('datatypeWysiwygTextarea', 'datatypeFormWysiwygTextarea');
+        $this->addType('datatypeTextarea', 'datatypeFormTextarea');
 
         parent::__construct($options);
     }
-
 }

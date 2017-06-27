@@ -57,7 +57,7 @@ class ConfigProvider
                 'datatypeFormGooglePlaceId'          => \Adminaut\Datatype\GooglePlaceId\FormViewHelper::class,
                 'datatypeFormDateTime'          => \Adminaut\Datatype\DateTime\FormViewHelper::class,
                 'datatypeFormFile'          => \Adminaut\Datatype\File\FormViewHelper::class,
-                'datatypeFormWysiwygTextarea' => \Adminaut\Datatype\WysiwygTextarea\WysiwygTextareaFormViewHelper::class,
+                'datatypeFormTextarea' => \Adminaut\Datatype\Textarea\TextareaFormViewHelper::class,
 
                 // detail
                 'datatypeDetail'             => \Adminaut\Datatype\View\Helper\datatypeDetailViewHelper::class,
