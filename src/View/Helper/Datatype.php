@@ -1,9 +1,14 @@
 <?php
+
 namespace Adminaut\Datatype\View\Helper;
 
 use TwbBundle\Form\View\Helper\TwbBundleFormElement;
 use TwbBundle\Options\ModuleOptions;
 
+/**
+ * Class Datatype
+ * @package Adminaut\Datatype\View\Helper
+ */
 class Datatype extends TwbBundleFormElement
 {
     public function __construct(ModuleOptions $options)
@@ -19,6 +24,7 @@ class Datatype extends TwbBundleFormElement
         $this->addType('datatypeGooglePlaceId', 'datatypeFormGooglePlaceId');
         $this->addType('datatypeDateTime', 'datatypeFormDateTime');
         $this->addType('datatypeFile', 'datatypeFormFile');
+        $this->addType('datatypeWysiwygTextarea', 'datatypeFormWysiwygTextarea');
 
         parent::__construct($options);
     }
