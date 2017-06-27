@@ -28,7 +28,29 @@ class WysiwygTextareaFormViewHelper extends FormTextarea
     public function render(ElementInterface $element)
     {
         $render = parent::render($element);
-        $render .= '<script>$(\'#' . $element->getAttribute('id') . '\').wysihtml5();</script>' . PHP_EOL;
+
+        $editor = $element->getOption('editor');
+
+        switch ($editor) {
+            case 'bootstrap':
+                $render .= '<script>
+$(document).ready(function (){
+    $(\'#' . $element->getAttribute('id') . '\').wysihtml5();
+});
+</script>' . PHP_EOL;
+                break;
+            case 'ckeditor':
+                $render .= '<script>
+$(document).ready(function (){
+    CKEDITOR.replace(\'' . $element->getAttribute('id') . '\');
+});
+</script>' . PHP_EOL;
+                break;
+            case 'none':
+            default:
+                break;
+        }
+
         return $render;
     }
 }

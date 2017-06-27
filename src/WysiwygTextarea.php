@@ -12,22 +12,32 @@ class WysiwygTextarea extends \Zend\Form\Element\Textarea implements DatatypeInt
         setOptions as datatypeSetOptions;
     }
 
-    const TYPES = ['bootstrap', 'tinymce'];
+    const EDITORS = ['none', 'bootstrap', 'ckeditor'];
 
     protected $attributes = [
         'type' => 'datatypeWysiwygTextarea',
     ];
 
-    protected $type = 'bootstrap';
+    protected $editor = 'none';
+
+    protected $rows = 5;
 
     /**
-     * @param $type
+     * @param $editor
      */
-    public function setType($type)
+    public function setEditor($editor)
     {
-        if (in_array($type, self::TYPES)) {
-            $this->type = $type;
+        if (in_array($editor, self::EDITORS)) {
+            $this->editor = $editor;
         }
+    }
+
+    /**
+     * @param $rows
+     */
+    public function setRows($rows)
+    {
+        $this->rows = $rows;
     }
 
     /**
@@ -36,8 +46,12 @@ class WysiwygTextarea extends \Zend\Form\Element\Textarea implements DatatypeInt
      */
     public function setOptions($options)
     {
-        if (isset($options['type'])) {
-            $this->setType($options['type']);
+        if (isset($options['editor'])) {
+            $this->setEditor($options['editor']);
+        }
+
+        if (isset($options['rows'])) {
+            $this->setRows($options['rows']);
         }
 
         $this->datatypeSetOptions($options);
@@ -49,7 +63,8 @@ class WysiwygTextarea extends \Zend\Form\Element\Textarea implements DatatypeInt
      */
     public function getAttributes()
     {
-        $this->attributes['id'] = $this->attributes['name'];
+        $this->setAttribute('id', $this->attributes['name']);
+        $this->setAttribute('rows', $this->rows);
         return $this->attributes;
     }
 }
