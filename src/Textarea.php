@@ -28,7 +28,9 @@ class Textarea extends \Zend\Form\Element\Textarea implements DatatypeInterface
 
     protected $editor = 'none';
 
-    protected $rows = 5;
+    protected $height = 250;
+
+    protected $maxHeight = 500;
 
     protected $autosize = false;
 
@@ -43,11 +45,43 @@ class Textarea extends \Zend\Form\Element\Textarea implements DatatypeInterface
     }
 
     /**
-     * @param int $rows
+     * @return string
      */
-    public function setRows($rows)
+    public function getEditor()
     {
-        $this->rows = $rows;
+        return $this->editor;
+    }
+
+    /**
+     * @param int $height
+     */
+    public function setHeight($height)
+    {
+        $this->height = $height;
+    }
+
+    /**
+     * @return int
+     */
+    public function getHeight()
+    {
+        return $this->height;
+    }
+
+    /**
+     * @param int $maxHeight
+     */
+    public function setMaxHeight($maxHeight)
+    {
+        $this->maxHeight = $maxHeight;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMaxHeight()
+    {
+        return $this->maxHeight;
     }
 
     /**
@@ -56,6 +90,14 @@ class Textarea extends \Zend\Form\Element\Textarea implements DatatypeInterface
     public function setAutosize($autosize)
     {
         $this->autosize = $autosize;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getAutosize()
+    {
+        return $this->autosize;
     }
 
     /**
@@ -68,8 +110,12 @@ class Textarea extends \Zend\Form\Element\Textarea implements DatatypeInterface
             $this->setEditor($options['editor']);
         }
 
-        if (isset($options['rows'])) {
-            $this->setRows($options['rows']);
+        if (isset($options['height'])) {
+            $this->setHeight($options['height']);
+        }
+
+        if (isset($options['maxHeight'])) {
+            $this->setMaxHeight($options['maxHeight']);
         }
 
         if (isset($options['autosize'])) {
@@ -86,7 +132,6 @@ class Textarea extends \Zend\Form\Element\Textarea implements DatatypeInterface
     public function getAttributes()
     {
         $this->setAttribute('id', $this->attributes['name']);
-        $this->setAttribute('rows', $this->rows);
         return $this->attributes;
     }
 }

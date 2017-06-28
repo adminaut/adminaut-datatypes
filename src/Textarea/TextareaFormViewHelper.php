@@ -2,7 +2,9 @@
 
 namespace Adminaut\Datatype\Textarea;
 
+use Adminaut\Datatype\Textarea;
 use Zend\Form\ElementInterface;
+use Zend\Form\Exception\InvalidArgumentException;
 use Zend\Form\View\Helper\FormTextarea;
 
 /**
@@ -27,24 +29,56 @@ class TextareaFormViewHelper extends FormTextarea
      */
     public function render(ElementInterface $element)
     {
+        if (!$element instanceof Textarea) {
+            throw new InvalidArgumentException(sprintf(
+                '%s requires that the element is of type ' . Textarea::class,
+                __METHOD__
+            ));
+        }
+
+        // get element name and set it as identifier
+        $elementId = $element->getAttribute('name');
+        $element->setAttribute('id', $elementId);
+
+        // get element options important in this view helper
+        $elementEditor = $element->getEditor();
+        $elementHeight = $element->getHeight();
+        $elementMaxHeight = $element->getMaxHeight();
+        $elementAutoSize = $element->getAutosize();
+
+        // bootstrap wysihtml5
+        if ('bootstrap' === $elementEditor) {
+            $render = parent::render($element);
+            $render .= $this->getEditorScriptBootstrapWYSIHTML5($elementId);
+
+            return $render;
+        }
+
+        // ckeditor
+        if ('ckeditor' === $elementEditor) {
+            $render = parent::render($element);
+            $render .= $this->getEditorScriptCKEditor($elementId);
+
+            return $render;
+        }
+
+        // tinymce
+        if ('tinymce' === $elementEditor) {
+            $render = parent::render($element);
+            $render .= $this->getEditorScriptTinyMCE($elementId, $elementHeight, $elementAutoSize);
+
+            return $render;
+        }
+
+        // no editor, create rows from height
+        $rows = ceil($elementHeight / 25); // px to rows, let's say that 100px is 4 rows
+        $element->setAttribute('rows', $rows);
+
         $render = parent::render($element);
 
-        $elementId = $element->getAttribute('id');
-
-        $editor = $element->getOption('editor');
-        $autoSize = $element->getOption('autosize');
-
-        if ('bootstrap' === $editor) {
-            $render .= $this->getEditorScriptBootstrapWYSIHTML5($elementId);
-        } else if ('ckeditor' === $editor) {
-            $render .= $this->getEditorScriptCKEditor($elementId);
-        } else if ('tinymce' === $editor) {
-            $render .= $this->getEditorScriptTinyMCE($elementId, $autoSize);
-        } else {
-            // autosize works only when there is no editor
-            if (true === $autoSize) {
-                $render .= $this->getAutosizeScript($elementId);
-            }
+        // autosize javascript works only on plain textarea
+        if (true === $elementAutoSize) {
+            $render .= $this->getAutosizeScript($elementId);
         }
 
         return $render;
@@ -85,23 +119,25 @@ class TextareaFormViewHelper extends FormTextarea
 
     /**
      * @param $elementId
-     * @param bool $autoSize
+     * @param int $elementHeight
+     * @param bool $elementAutoSize
      * @return string
      */
-    private function getEditorScriptTinyMCE($elementId, $autoSize = false)
+    private function getEditorScriptTinyMCE($elementId, $elementHeight = 200, $elementAutoSize = false)
     {
         $options = '{
-            selector: "#' . $elementId . '"
+            selector: "#' . $elementId . '",
+            height: ' . $elementHeight . '
         }';
 
         // todo: read more at https://www.tinymce.com/docs/plugins/autoresize/
-        if (true === $autoSize) {
+        if (true === $elementAutoSize) {
             $options = '{
                 selector: "#' . $elementId . '", 
+                height: ' . $elementHeight . ',
                 plugins: "autoresize",
                 autoresize_bottom_margin: 20,
-                autoresize_min_height: 200,
-                autoresize_max_height: 500
+                autoresize_min_height: ' . $elementHeight . '
             }';
         }
 
@@ -110,6 +146,10 @@ class TextareaFormViewHelper extends FormTextarea
         return $this->getScript($content);
     }
 
+    /**
+     * @param $elementId
+     * @return string
+     */
     private function getAutosizeScript($elementId)
     {
         $content = 'autosize($("#' . $elementId . '"));';
@@ -117,6 +157,7 @@ class TextareaFormViewHelper extends FormTextarea
     }
 
     /**
+     * Returns script tags with anonymous function waiting for document ready event.
      * @param $content
      * @return string
      */
