@@ -15,7 +15,12 @@ class Textarea extends \Zend\Form\Element\Textarea implements DatatypeInterface
     /**
      * Available editors
      */
-    const EDITORS = ['none', 'bootstrap', 'ckeditor', 'tinymce'];
+    const EDITOR_NONE = 'none';
+    const EDITOR_BOOTSTRAP = 'bootstrap';
+    const EDITOR_CKEDITOR = 'ckeditor';
+    const EDITOR_TINYMCE = 'tinymce';
+
+    const EDITORS = [self::EDITOR_NONE, self::EDITOR_BOOTSTRAP, self::EDITOR_CKEDITOR, self::EDITOR_TINYMCE];
 
     protected $attributes = [
         'type' => 'datatypeTextarea',
@@ -24,6 +29,8 @@ class Textarea extends \Zend\Form\Element\Textarea implements DatatypeInterface
     protected $editor = 'none';
 
     protected $rows = 5;
+
+    protected $autosize = false;
 
     /**
      * @param $editor
@@ -36,11 +43,19 @@ class Textarea extends \Zend\Form\Element\Textarea implements DatatypeInterface
     }
 
     /**
-     * @param $rows
+     * @param int $rows
      */
     public function setRows($rows)
     {
         $this->rows = $rows;
+    }
+
+    /**
+     * @param bool $autosize
+     */
+    public function setAutosize($autosize)
+    {
+        $this->autosize = $autosize;
     }
 
     /**
@@ -55,6 +70,10 @@ class Textarea extends \Zend\Form\Element\Textarea implements DatatypeInterface
 
         if (isset($options['rows'])) {
             $this->setRows($options['rows']);
+        }
+
+        if (isset($options['autosize'])) {
+            $this->setAutosize($options['autosize']);
         }
 
         $this->datatypeSetOptions($options);
