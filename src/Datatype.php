@@ -151,8 +151,10 @@ trait Datatype
 
         if (isset($options['primary'])) {
             $this->setPrimary($options['primary']);
-            $this->setListed(true);
-            $options['listed'] = true;
+            if($this->isPrimary()) {
+                $this->setListed(true);
+                $options['listed'] = true;
+            }
         } else {
             $options['primary'] = $this->isPrimary();
         }
