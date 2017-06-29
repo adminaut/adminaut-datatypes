@@ -102,7 +102,13 @@ class TextareaFormViewHelper extends FormTextarea
                 "blockquote": false, //Blockquote  
                 "size": "none", //default: none, other options are xs, sm, lg,
                 "fa": false //use font awesome instead of glyphicons? default false
-            }
+            },
+            "events": {
+        		"load": function() { 
+                    // allows to resize wysihtml5 iframe
+                    $(".wysihtml5-sandbox").css("resize", "vertical");
+		        }
+		    }
         });';
         return $this->getScript($content);
     }
