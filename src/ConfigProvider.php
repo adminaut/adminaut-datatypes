@@ -1,10 +1,11 @@
 <?php
+
 namespace Adminaut\Datatype;
 
-use Adminaut\Datatype\View\Helper\Factory\DatatypeFactory;
-use Adminaut\Datatype\View\Helper\FormCollection;
-use Adminaut\Datatype\View\Helper\FormRow;
-
+/**
+ * Class ConfigProvider
+ * @package Adminaut\Datatype
+ */
 class ConfigProvider
 {
     /**
@@ -45,40 +46,43 @@ class ConfigProvider
     {
         return [
             'invokables' => [
-                // form
-                'formCollection'             => FormCollection::class,
-                'datatypeFormSelect'           => \Adminaut\Datatype\Select\FormViewHelper::class,
-                'datatypeFormCheckbox'           => \Adminaut\Datatype\Checkbox\FormViewHelper::class,
-                'datatypeFormMultiCheckbox'           => \Adminaut\Datatype\MultiCheckbox\FormViewHelper::class,
-                'datatypeFormMultiReference'          => \Adminaut\Datatype\MultiReference\FormViewHelper::class,
-                'datatypeFormLocation'          => \Adminaut\Datatype\Location\FormViewHelper::class,
-                'datatypeFormGoogleMap'          => \Adminaut\Datatype\GoogleMap\FormViewHelper::class,
-                'datatypeFormGoogleStreetView'          => \Adminaut\Datatype\GoogleStreetView\FormViewHelper::class,
-                'datatypeFormGooglePlaceId'          => \Adminaut\Datatype\GooglePlaceId\FormViewHelper::class,
-                'datatypeFormDateTime'          => \Adminaut\Datatype\DateTime\FormViewHelper::class,
-                'datatypeFormFile'          => \Adminaut\Datatype\File\FormViewHelper::class,
-                'datatypeFormTextarea' => \Adminaut\Datatype\Textarea\TextareaFormViewHelper::class,
+                // form collection
+                'formCollection' => View\Helper\FormCollection::class,
 
-                // detail
-                'datatypeDetail'             => \Adminaut\Datatype\View\Helper\datatypeDetailViewHelper::class,
-                'datatypeLocationDetail'    => \Adminaut\Datatype\Location\DetailViewHelper::class,
-                'datatypeGoogleMapDetail'    => \Adminaut\Datatype\GoogleMap\DetailViewHelper::class,
-                'datatypeGoogleStreetViewDetail'    => \Adminaut\Datatype\GoogleStreetView\DetailViewHelper::class,
+                // form helpers
+                'datatypeFormSelect' => Select\FormViewHelper::class,
+                'datatypeFormCheckbox' => Checkbox\FormViewHelper::class,
+                'datatypeFormMultiCheckbox' => MultiCheckbox\FormViewHelper::class,
+                'datatypeFormMultiReference' => MultiReference\FormViewHelper::class,
+                'datatypeFormLocation' => Location\FormViewHelper::class,
+                'datatypeFormGoogleMap' => GoogleMap\FormViewHelper::class,
+                'datatypeFormGoogleStreetView' => GoogleStreetView\FormViewHelper::class,
+                'datatypeFormGooglePlaceId' => GooglePlaceId\FormViewHelper::class,
+                'datatypeFormDateTime' => DateTime\FormViewHelper::class,
+                'datatypeFormFile' => File\FormViewHelper::class,
+                'datatypeFormTextarea' => Textarea\FormViewHelper::class,
+
+                // detail helpers
+                'datatypeDetail' => View\Helper\datatypeDetailViewHelper::class,
+                'datatypeLocationDetail' => Location\DetailViewHelper::class,
+                'datatypeGoogleMapDetail' => GoogleMap\DetailViewHelper::class,
+                'datatypeGoogleStreetViewDetail' => GoogleStreetView\DetailViewHelper::class,
+                'datatypeTextareaDetail' => Textarea\DetailViewHelper::class,
             ],
             'aliases' => [
-                'formrow'                    => FormRow::class,
-                'form_row'                   => FormRow::class,
-                'formRow'                    => FormRow::class,
-                'FormRow'                    => FormRow::class,
-                'datatype'                   => \Adminaut\Datatype\View\Helper\Datatype::class,
+                'formrow' => View\Helper\FormRow::class,
+                'form_row' => View\Helper\FormRow::class,
+                'formRow' => View\Helper\FormRow::class,
+                'FormRow' => View\Helper\FormRow::class,
+                'datatype' => View\Helper\Datatype::class,
             ],
             'factories' => [
-                FormRow::class               => View\Helper\Factory\FormRowFactory::class,
-                \Adminaut\Datatype\View\Helper\Datatype::class  => DatatypeFactory::class,
+                View\Helper\FormRow::class => View\Helper\Factory\FormRowFactory::class,
+                View\Helper\Datatype::class => View\Helper\Factory\DatatypeFactory::class,
 
                 //form
-                'datatypeFormReference'          => \Adminaut\Datatype\Reference\Factory\FormViewHelperFactory::class,
-            ]
+                'datatypeFormReference' => Reference\Factory\FormViewHelperFactory::class,
+            ],
         ];
     }
 }

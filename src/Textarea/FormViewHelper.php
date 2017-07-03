@@ -8,18 +8,22 @@ use Zend\Form\Exception\InvalidArgumentException;
 use Zend\Form\View\Helper\FormTextarea;
 
 /**
- * Class TextareaFormViewHelper
+ * Class FormViewHelper
  * @package Adminaut\Datatype\Textarea
  */
-class TextareaFormViewHelper extends FormTextarea
+class FormViewHelper extends FormTextarea
 {
 
     /**
      * @param ElementInterface|null $element
-     * @return string
+     * @return FormViewHelper|string
      */
     public function __invoke(ElementInterface $element = null)
     {
+        if (null === $element) {
+            return $this;
+        }
+
         return $this->render($element);
     }
 
