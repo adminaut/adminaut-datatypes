@@ -43,7 +43,7 @@ class TextareaFormViewHelper extends FormTextarea
         // get element options important in this view helper
         $elementEditor = $element->getEditor();
         $elementHeight = $element->getHeight();
-        $elementMaxHeight = $element->getMaxHeight();
+        //$elementMaxHeight = $element->getMaxHeight();
         $elementAutoSize = $element->getAutosize();
 
         // bootstrap wysihtml5
@@ -103,7 +103,7 @@ class TextareaFormViewHelper extends FormTextarea
                 "size": "none", //default: none, other options are xs, sm, lg,
                 "fa": false //use font awesome instead of glyphicons? default false
             },
-            "events": {
+            events: {
         		"load": function() { 
                     // allows to resize wysihtml5 iframe
                     $(".wysihtml5-sandbox").css("resize", "vertical");
@@ -169,6 +169,12 @@ class TextareaFormViewHelper extends FormTextarea
      */
     private function getScript($content)
     {
-        return '<script>$(document).ready(function() {' . $content . '});</script>' . PHP_EOL;
+        $script = '<script>';
+        $script .= '(function($){$(document).ready(function() {';
+        $script .= $content;
+        $script .= '});})(jQuery);';
+        $script .= '</script>';
+
+        return $script;
     }
 }
