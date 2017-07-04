@@ -28,6 +28,21 @@ class DetailViewHelper extends AbstractHelper
         '<li>',
         '<a>',
     ];
+    /**
+     * @var array
+     */
+    protected $allowedTags2 = [
+        'p',
+        'b',
+        'strong',
+        'u',
+        'i',
+        'em',
+        'ul',
+        'ol',
+        'li',
+        'a',
+    ];
 
     /**
      * @param ElementInterface|null $element
@@ -61,18 +76,20 @@ class DetailViewHelper extends AbstractHelper
             return '';
         }
 
+        // strip html tags except allowed tags
         // http://php.net/strip_tags
         $value = strip_tags($value, implode($this->allowedTags));
 
-        // todo: change code above to something like code below, for security reasons
+        // escape html tags
+        $value = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
 
-        //$value = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+        // change allowed html tags back
+        foreach ($this->allowedTags2 as $tag) {
+            $value = str_replace("&lt;" . $tag . "&gt;", "<" . $tag . ">", $value);
+            $value = str_replace("&lt;/" . $tag . "&gt;", "</" . $tag . ">", $value);
+        }
 
-        //foreach ($this->allowedTags as $tag) {
-        //    $value = str_replace("&lt;" . $tag . "&gt;", "<" . $tag . ">", $value);
-        //    $value = str_replace("&lt;/" . $tag . "&gt;", "</" . $tag . ">", $value);
-        //}
-
+        // return value encapsulated in textarea-detail class
         return '<div class="textarea-detail">' . $value . '</div>';
     }
 }
