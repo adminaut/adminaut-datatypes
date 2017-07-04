@@ -1,11 +1,21 @@
 <?php
+
 namespace Adminaut\Datatype;
 
-
 use Zend\Form\Element;
+use Zend\Form\Form;
 
+/**
+ * Trait Datatype
+ * @package Adminaut\Datatype
+ */
 trait Datatype
 {
+    /**
+     * @var Form
+     */
+    protected $form = null;
+
     /**
      * @var bool
      */
@@ -35,8 +45,6 @@ trait Datatype
      * @var string|null
      */
     protected $defaultSort = null;
-
-
 
     /**
      * @return bool
@@ -82,8 +90,9 @@ trait Datatype
      * @param bool $required
      */
     public function setRequired($required)
-    {// TODO: REQUIRED IN OPTIONS
-//        $this->setAttribute('required', 'required');
+    {
+        // TODO: REQUIRED IN OPTIONS
+        //$this->setAttribute('required', 'required');
         $this->required = $required;
     }
 
@@ -135,8 +144,6 @@ trait Datatype
         $this->defaultSort = $defaultSort;
     }
 
-
-
     /**
      * @param  array $options
      * @return Element
@@ -151,7 +158,7 @@ trait Datatype
 
         if (isset($options['primary'])) {
             $this->setPrimary($options['primary']);
-            if($this->isPrimary()) {
+            if ($this->isPrimary()) {
                 $this->setListed(true);
                 $options['listed'] = true;
             }
@@ -159,10 +166,24 @@ trait Datatype
             $options['primary'] = $this->isPrimary();
         }
 
-
-
         parent::setOptions($options);
         return $this;
+    }
+
+    /**
+     * @return Form
+     */
+    public function getForm()
+    {
+        return $this->form;
+    }
+
+    /**
+     * @param Form $form
+     */
+    public function setForm($form)
+    {
+        $this->form = $form;
     }
 
     /**
